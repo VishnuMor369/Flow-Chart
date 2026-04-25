@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon';
 import { createPortal } from 'react-dom';
+import { Link } from 'react-router-dom';
 import {
 	NavigationMenu,
 	NavigationMenuContent,
@@ -82,9 +83,9 @@ export function Header() {
 								</NavigationMenuContent>
 							</NavigationMenuItem>
                             <NavigationMenuLink className="px-4 text-sm font-medium" asChild>
-								<a href="#" className="hover:text-[#8bc34a] transition-colors rounded-md p-2">
+								<Link to="/best-practices" className="hover:text-[#8bc34a] transition-colors rounded-md p-2">
 									Best Practices
-								</a>
+								</Link>
 							</NavigationMenuLink>
 							<NavigationMenuLink className="px-4 text-sm font-medium" asChild>
 								<a href="#team" className="hover:text-[#8bc34a] transition-colors rounded-md p-2">

@@ -27,13 +27,23 @@ const nodeWidth = 260;
 const nodeHeight = 90;
 
 const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => {
-  const dagreGraph = new dagre.graphlib.Graph();
+  const dagreGraph = new dagre.graphlib.Graph({ compound: true });
   dagreGraph.setDefaultEdgeLabel(() => ({}));
   dagreGraph.setGraph({ rankdir: direction, ranksep: 100, nodesep: 50 });
 
   nodes.forEach((node) => {
     if (!node.hidden) {
-      dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
+      if (node.type === 'groupNode') {
+        dagreGraph.setNode(node.id, { label: node.data.label });
+      } else {
+        dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
+      }
+    }
+  });
+
+  nodes.forEach((node) => {
+    if (!node.hidden && node.parentId) {
+      dagreGraph.setParent(node.id, node.parentId);
     }
   });
 
@@ -47,14 +57,42 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => 
 
   const newNodes = nodes.map((node) => {
     if (node.hidden) return node;
-    const nodeWithPosition = dagreGraph.node(node.id);
-    return {
-      ...node,
-      position: {
-        x: nodeWithPosition.x - nodeWidth / 2,
-        y: nodeWithPosition.y - nodeHeight / 2,
-      },
-    };
+    const dagreNode = dagreGraph.node(node.id);
+    
+    if (node.type === 'groupNode') {
+      const padding = 40;
+      return {
+        ...node,
+        position: {
+          x: dagreNode.x - dagreNode.width / 2 - padding,
+          y: dagreNode.y - dagreNode.height / 2 - padding,
+        },
+        style: {
+          width: dagreNode.width + padding * 2,
+          height: dagreNode.height + padding * 2,
+        }
+      };
+    } else {
+      if (node.parentId) {
+        const parentDagreNode = dagreGraph.node(node.parentId);
+        const padding = 40;
+        return {
+          ...node,
+          position: {
+            x: (dagreNode.x - dagreNode.width / 2) - (parentDagreNode.x - parentDagreNode.width / 2 - padding),
+            y: (dagreNode.y - dagreNode.height / 2) - (parentDagreNode.y - parentDagreNode.height / 2 - padding),
+          }
+        };
+      } else {
+        return {
+          ...node,
+          position: {
+            x: dagreNode.x - nodeWidth / 2,
+            y: dagreNode.y - nodeHeight / 2,
+          },
+        };
+      }
+    }
   });
 
   return { nodes: newNodes, edges };
@@ -115,7 +153,17 @@ const CustomNode = ({ data, id }: NodeProps) => {
   );
 };
 
-const nodeTypes = { customNode: CustomNode };
+const GroupNode = ({ data }: NodeProps) => {
+  return (
+    <div className="w-full h-full rounded-2xl border-2 border-dashed border-[#8bc34a]/40 bg-[#8bc34a]/5 relative pointer-events-none">
+      <div className="absolute -top-3 left-4 bg-[#0f0f0f] px-3 text-[#8bc34a] font-bold text-sm tracking-widest uppercase shadow-sm">
+        {data.label as string}
+      </div>
+    </div>
+  );
+};
+
+const nodeTypes = { customNode: CustomNode, groupNode: GroupNode };
 
 interface InteractiveRoadmapProps {
   initialNodes: Node[];
@@ -181,13 +229,8 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
 
       return newNodes;
     });
-
-    // Fit view slightly after layout transition
-    setTimeout(() => {
-      fitView({ duration: 800, padding: 0.2 });
-    }, 150);
     
-  }, [edges, setNodes, setEdges, updateLayout, fitView]);
+  }, [edges, setNodes, setEdges, updateLayout]);
 
   // Inject the toggle handler into node data
   useEffect(() => {
@@ -236,7 +279,7 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
 
       const updatedNodes = nds.map(n => {
         if (n.id === nodeId) {
-          return { ...n, data: { ...n.data, completed: isCompleted } };
+          return { ...n, data: { ...n.data, completed: isCompleted, isLocked: checkLocked(n.id) } };
         }
         return { ...n, data: { ...n.data, isLocked: checkLocked(n.id) } };
       });
@@ -314,7 +357,9 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
     });
   }, [roadmapId]);
 
-  const progressPercentage = Math.round((nodes.filter(n => n.data.completed).length / nodes.length) * 100) || 0;
+  const actionableNodes = nodes.filter(n => n.type !== 'groupNode');
+  const completedActionableNodes = actionableNodes.filter(n => n.data.completed);
+  const progressPercentage = actionableNodes.length > 0 ? Math.round((completedActionableNodes.length / actionableNodes.length) * 100) : 0;
 
   return (
     <div className="flex w-full h-[80vh] overflow-hidden" ref={reactFlowWrapper}>
@@ -336,6 +381,7 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
           onNodeMouseLeave={() => setHoveredNodeId(null)}
           nodeTypes={nodeTypes}
           fitView
+          fitViewOptions={{ nodes: [{ id: 'beginner' }], maxZoom: 1.2, padding: 0.2 }}
           minZoom={0.1}
           className="bg-[#0f0f0f]"
           colorMode="dark"
@@ -375,12 +421,12 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
             <div className="text-sm font-medium text-gray-400 mb-2">Progress</div>
             <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl font-bold text-white">{progressPercentage}%</span>
-                <span className="text-[#8bc34a] text-sm font-bold">{nodes.filter(n => n.data.completed).length} / {nodes.length}</span>
+                <span className="text-[#8bc34a] text-sm font-bold">{completedActionableNodes.length} / {actionableNodes.length}</span>
             </div>
             <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
                 <div 
-                    className="h-full bg-[#8bc34a] transition-all duration-500" 
-                    style={{ width: `${progressPercentage}%` }}
+                    className="h-full bg-[#8bc34a] transition-all duration-500 rounded-full" 
+                    style={{ width: `${progressPercentage}%`, minWidth: progressPercentage > 0 ? '8px' : '0px' }}
                 />
             </div>
           </Panel>

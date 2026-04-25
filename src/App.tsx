@@ -138,11 +138,14 @@ function LandingPage() {
   );
 }
 
+import BestPractices from '@/pages/BestPractices';
+
 function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/roadmap/:id" element={<RoadmapPage />} />
+      <Route path="/best-practices" element={<><Header /><BestPractices /><HoverFooter /></>} />
     </Routes>
   );
 }
