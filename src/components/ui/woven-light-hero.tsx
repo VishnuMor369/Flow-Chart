@@ -24,33 +24,33 @@ export const WovenLightHero = () => {
       }
     }));
     buttonControls.start({
-        opacity: 1,
-        transition: { delay: 1, duration: 1 }
+      opacity: 1,
+      transition: { delay: 1, duration: 1 }
     });
 
     return () => {
-        document.head.removeChild(link);
+      document.head.removeChild(link);
     }
   }, [textControls, buttonControls]);
 
   const headline = "Developer Roadmaps";
-  
+
   return (
     <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#0f0f0f]">
       <WovenCanvas />
-      
+
       <div className="relative z-10 text-center px-4 pt-16">
         <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
-            {headline.split(" ").map((word, i) => (
-                <span key={i} className="inline-block">
-                    {word.split("").map((char, j) => (
-                        <motion.span key={j} custom={i * 5 + j} initial={{ opacity: 0, y: 30 }} animate={textControls} style={{ display: 'inline-block' }}>
-                            {char}
-                        </motion.span>
-                    ))}
-                    {i < headline.split(" ").length - 1 && <span>&nbsp;</span>}
-                </span>
-            ))}
+          {headline.split(" ").map((word, i) => (
+            <span key={i} className="inline-block">
+              {word.split("").map((char, j) => (
+                <motion.span key={j} custom={i * 5 + j} initial={{ opacity: 0, y: 30 }} animate={textControls} style={{ display: 'inline-block' }}>
+                  {char}
+                </motion.span>
+              ))}
+              {i < headline.split(" ").length - 1 && <span>&nbsp;</span>}
+            </span>
+          ))}
         </h1>
         <motion.p
           custom={headline.length}
@@ -102,104 +102,104 @@ const WovenCanvas = () => {
     const torusKnot = new THREE.TorusKnotGeometry(2, 0.8, 150, 24);
 
     for (let i = 0; i < particleCount; i++) {
-        const vertexIndex = i % torusKnot.attributes.position.count;
-        const x = torusKnot.attributes.position.getX(vertexIndex);
-        const y = torusKnot.attributes.position.getY(vertexIndex);
-        const z = torusKnot.attributes.position.getZ(vertexIndex);
-        
-        positions[i * 3] = x * 1.5;
-        positions[i * 3 + 1] = y * 1.5;
-        positions[i * 3 + 2] = z * 1.5;
-        originalPositions[i * 3] = x * 1.5;
-        originalPositions[i * 3 + 1] = y * 1.5;
-        originalPositions[i * 3 + 2] = z * 1.5;
+      const vertexIndex = i % torusKnot.attributes.position.count;
+      const x = torusKnot.attributes.position.getX(vertexIndex);
+      const y = torusKnot.attributes.position.getY(vertexIndex);
+      const z = torusKnot.attributes.position.getZ(vertexIndex);
 
-        const color = new THREE.Color();
-        // Theme color (yellow-green #8bc34a) variations
-        color.setHSL(0.24 + Math.random() * 0.05, 0.5, 0.2 + Math.random() * 0.3);
-        colors[i * 3] = color.r;
-        colors[i * 3 + 1] = color.g;
-        colors[i * 3 + 2] = color.b;
-        
-        velocities[i * 3] = 0;
-        velocities[i * 3 + 1] = 0;
-        velocities[i * 3 + 2] = 0;
+      positions[i * 3] = x * 1.5;
+      positions[i * 3 + 1] = y * 1.5;
+      positions[i * 3 + 2] = z * 1.5;
+      originalPositions[i * 3] = x * 1.5;
+      originalPositions[i * 3 + 1] = y * 1.5;
+      originalPositions[i * 3 + 2] = z * 1.5;
+
+      const color = new THREE.Color();
+      // Theme color (yellow-green #8bc34a) variations
+      color.setHSL(0.24 + Math.random() * 0.05, 0.5, 0.2 + Math.random() * 0.3);
+      colors[i * 3] = color.r;
+      colors[i * 3 + 1] = color.g;
+      colors[i * 3 + 2] = color.b;
+
+      velocities[i * 3] = 0;
+      velocities[i * 3 + 1] = 0;
+      velocities[i * 3 + 2] = 0;
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
     const material = new THREE.PointsMaterial({
-        size: 0.03,
-        vertexColors: true,
-        blending: THREE.AdditiveBlending,
-        transparent: true,
-        opacity: 0.6,
+      size: 0.03,
+      vertexColors: true,
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      opacity: 0.6,
     });
 
     const points = new THREE.Points(geometry, material);
     scene.add(points);
 
     const handleMouseMove = (event: MouseEvent) => {
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     };
     window.addEventListener('mousemove', handleMouseMove);
 
     const animate = () => {
-        requestAnimationFrame(animate);
-        const elapsedTime = clock.getElapsedTime();
-        
-        const mouseWorld = new THREE.Vector3(mouse.x * 4, mouse.y * 4, 0);
+      requestAnimationFrame(animate);
+      const elapsedTime = clock.getElapsedTime();
 
-        for (let i = 0; i < particleCount; i++) {
-            const ix = i * 3;
-            const iy = i * 3 + 1;
-            const iz = i * 3 + 2;
+      const mouseWorld = new THREE.Vector3(mouse.x * 4, mouse.y * 4, 0);
 
-            const currentPos = new THREE.Vector3(positions[ix], positions[iy], positions[iz]);
-            const originalPos = new THREE.Vector3(originalPositions[ix], originalPositions[iy], originalPositions[iz]);
-            const velocity = new THREE.Vector3(velocities[ix], velocities[iy], velocities[iz]);
+      for (let i = 0; i < particleCount; i++) {
+        const ix = i * 3;
+        const iy = i * 3 + 1;
+        const iz = i * 3 + 2;
 
-            const dist = currentPos.distanceTo(mouseWorld);
-            if (dist < 2.0) {
-                const force = (2.0 - dist) * 0.01;
-                const direction = new THREE.Vector3().subVectors(currentPos, mouseWorld).normalize();
-                velocity.add(direction.multiplyScalar(force));
-            }
+        const currentPos = new THREE.Vector3(positions[ix], positions[iy], positions[iz]);
+        const originalPos = new THREE.Vector3(originalPositions[ix], originalPositions[iy], originalPositions[iz]);
+        const velocity = new THREE.Vector3(velocities[ix], velocities[iy], velocities[iz]);
 
-            const returnForce = new THREE.Vector3().subVectors(originalPos, currentPos).multiplyScalar(0.005);
-            velocity.add(returnForce);
-            
-            velocity.multiplyScalar(0.92);
-
-            positions[ix] += velocity.x;
-            positions[iy] += velocity.y;
-            positions[iz] += velocity.z;
-            
-            velocities[ix] = velocity.x;
-            velocities[iy] = velocity.y;
-            velocities[iz] = velocity.z;
+        const dist = currentPos.distanceTo(mouseWorld);
+        if (dist < 2.0) {
+          const force = (2.0 - dist) * 0.01;
+          const direction = new THREE.Vector3().subVectors(currentPos, mouseWorld).normalize();
+          velocity.add(direction.multiplyScalar(force));
         }
-        geometry.attributes.position.needsUpdate = true;
 
-        points.rotation.y = elapsedTime * 0.03;
-        points.rotation.x = elapsedTime * 0.02;
-        renderer.render(scene, camera);
+        const returnForce = new THREE.Vector3().subVectors(originalPos, currentPos).multiplyScalar(0.005);
+        velocity.add(returnForce);
+
+        velocity.multiplyScalar(0.92);
+
+        positions[ix] += velocity.x;
+        positions[iy] += velocity.y;
+        positions[iz] += velocity.z;
+
+        velocities[ix] = velocity.x;
+        velocities[iy] = velocity.y;
+        velocities[iz] = velocity.z;
+      }
+      geometry.attributes.position.needsUpdate = true;
+
+      points.rotation.y = elapsedTime * 0.03;
+      points.rotation.x = elapsedTime * 0.02;
+      renderer.render(scene, camera);
     };
     animate();
 
     const handleResize = () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
     };
     window.addEventListener('resize', handleResize);
 
     return () => {
-        window.removeEventListener('resize', handleResize);
-        window.removeEventListener('mousemove', handleMouseMove);
-        mountRef.current?.removeChild(renderer.domElement);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', handleMouseMove);
+      mountRef.current?.removeChild(renderer.domElement);
     };
   }, []);
 

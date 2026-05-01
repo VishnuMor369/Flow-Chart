@@ -38,7 +38,11 @@ type LinkItem = {
 	description?: string;
 };
 
-export function Header() {
+type HeaderProps = {
+	onAiTutorClick?: () => void;
+};
+
+export function Header({ onAiTutorClick }: HeaderProps = {}) {
 	const [open, setOpen] = React.useState(false);
 	const scrolled = useScroll(10);
 
@@ -60,13 +64,13 @@ export function Header() {
 					scrolled,
 			})}
 		>
-            <div className="bg-[#8bc34a] text-black text-xs font-semibold py-1.5 px-4 text-center">
-                Master SQL with our new premium course — Start Learning →
-            </div>
+			<div className="bg-[#8bc34a] text-black text-xs font-semibold py-1.5 px-4 text-center">
+				Master SQL with our new premium course — Start Learning →
+			</div>
 			<nav className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-4">
 				<div className="flex items-center gap-5">
 					<a href="#" className="hover:text-[#8bc34a] transition-colors rounded-md p-2 flex items-center font-bold text-lg gap-2 tracking-tight">
-                        <span className="text-[#8bc34a]">R</span> outiq
+						<span className="text-[#8bc34a]">R</span> outiq
 					</a>
 					<NavigationMenu className="hidden md:flex">
 						<NavigationMenuList>
@@ -82,7 +86,7 @@ export function Header() {
 									</ul>
 								</NavigationMenuContent>
 							</NavigationMenuItem>
-                            <NavigationMenuLink className="px-4 text-sm font-medium" asChild>
+							<NavigationMenuLink className="px-4 text-sm font-medium" asChild>
 								<Link to="/best-practices" className="hover:text-[#8bc34a] transition-colors rounded-md p-2">
 									Best Practices
 								</Link>
@@ -92,10 +96,10 @@ export function Header() {
 									Guides
 								</a>
 							</NavigationMenuLink>
-                            <NavigationMenuLink className="px-4 text-sm font-medium" asChild>
-								<a href="#" className="hover:text-[#8bc34a] transition-colors rounded-md p-2 text-[#8bc34a]">
+							<NavigationMenuLink className="px-4 text-sm font-medium" asChild>
+								<button onClick={onAiTutorClick} className="hover:text-[#8bc34a] transition-colors rounded-md p-2 text-[#8bc34a] cursor-pointer bg-transparent border-none">
 									AI Tutor
-								</a>
+								</button>
 							</NavigationMenuLink>
 						</NavigationMenuList>
 					</NavigationMenu>
