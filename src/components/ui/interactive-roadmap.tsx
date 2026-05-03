@@ -19,7 +19,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { toPng } from 'html-to-image';
-import { Download, Info, CheckCircle2, Circle, Plus, Minus, Lock } from 'lucide-react';
+import { Download, Info, CheckCircle2, Circle, Plus, Minus, Lock, PlayCircle, FileText, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import dagre from 'dagre';
 
@@ -58,7 +58,7 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => 
   const newNodes = nodes.map((node) => {
     if (node.hidden) return node;
     const dagreNode = dagreGraph.node(node.id);
-    
+
     if (node.type === 'groupNode') {
       const padding = 40;
       return {
@@ -102,24 +102,24 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => 
 const CustomNode = ({ data, id }: NodeProps) => {
   const depthColors = ['border-[#8bc34a]', 'border-[#4caf50]', 'border-[#009688]', 'border-[#00bcd4]'];
   const depthLevel = (data.depth as number) || 0;
-  const borderColor = data.completed ? depthColors[depthLevel % depthColors.length] : 'border-white/10';
-  
+  const borderColor = data.completed ? depthColors[depthLevel % depthColors.length] : 'border-border';
+
   return (
-    <div 
+    <div
       className={cn(
-        "px-4 py-3 shadow-xl rounded-lg border-2 bg-[#151515] transition-all min-w-[260px] relative group",
+        "px-4 py-3 shadow-xl rounded-lg border-2 bg-secondary transition-all min-w-[260px] relative group",
         borderColor,
         data.isLocked ? "opacity-50 grayscale cursor-not-allowed" : "hover:shadow-[#8bc34a]/20",
         data.isHoveredPath ? "ring-2 ring-white ring-offset-2 ring-offset-[#0f0f0f]" : "",
         data.isDimmed ? "opacity-30" : ""
       )}
     >
-      <Handle type="target" position={Position.Top} className="w-4 h-4 bg-[#151515] border-2 border-[#8bc34a]" />
-      
+      <Handle type="target" position={Position.Top} className="w-4 h-4 bg-secondary border-2 border-[#8bc34a]" />
+
       <div className="flex items-center justify-between gap-4 mb-1">
         <div className="flex items-center gap-2">
           {Boolean(data.isLocked) && <Lock size={14} className="text-gray-500" />}
-          <div className="font-bold text-white text-sm">
+          <div className="font-bold text-foreground text-sm">
             {data.label as string}
           </div>
         </div>
@@ -129,8 +129,8 @@ const CustomNode = ({ data, id }: NodeProps) => {
           <Circle size={20} className="text-gray-500" />
         )}
       </div>
-      
-      <div className="text-xs text-gray-400 truncate max-w-[200px]">
+
+      <div className="text-xs text-muted-foreground truncate max-w-[200px]">
         {data.description as string}
       </div>
 
@@ -142,13 +142,13 @@ const CustomNode = ({ data, id }: NodeProps) => {
               (data.onToggleExpand as Function)(id, !data.expanded);
             }
           }}
-          className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#151515] border border-white/20 rounded-full p-1 text-white hover:bg-white/10 transition-colors z-10"
+          className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-secondary border border-border/50 rounded-full p-1 text-foreground hover:bg-accent transition-colors z-10"
         >
           {data.expanded ? <Minus size={14} /> : <Plus size={14} />}
         </button>
       )}
 
-      <Handle type="source" position={Position.Bottom} className="w-4 h-4 bg-[#151515] border-2 border-[#8bc34a]" />
+      <Handle type="source" position={Position.Bottom} className="w-4 h-4 bg-secondary border-2 border-[#8bc34a]" />
     </div>
   );
 };
@@ -156,7 +156,7 @@ const CustomNode = ({ data, id }: NodeProps) => {
 const GroupNode = ({ data }: NodeProps) => {
   return (
     <div className="w-full h-full rounded-2xl border-2 border-dashed border-[#8bc34a]/40 bg-[#8bc34a]/5 relative pointer-events-none">
-      <div className="absolute -top-3 left-4 bg-[#0f0f0f] px-3 text-[#8bc34a] font-bold text-sm tracking-widest uppercase shadow-sm">
+      <div className="absolute -top-3 left-4 bg-background px-3 text-[#8bc34a] font-bold text-sm tracking-widest uppercase shadow-sm">
         {data.label as string}
       </div>
     </div>
@@ -176,7 +176,7 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
-  
+
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const { fitView } = useReactFlow();
 
@@ -221,7 +221,7 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
           if (expand && e.source === nodeId) return { ...e, hidden: false };
           return e;
         });
-        
+
         // Wait a tick then relayout
         setTimeout(() => updateLayout(newNodes, newEdges), 50);
         return newEdges;
@@ -229,7 +229,7 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
 
       return newNodes;
     });
-    
+
   }, [edges, setNodes, setEdges, updateLayout]);
 
   // Inject the toggle handler into node data
@@ -270,7 +270,7 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
   const handleNodeCompletion = (nodeId: string, isCompleted: boolean) => {
     setNodes((nds) => {
       const completedNodeIds = nds.filter(n => n.id === nodeId ? isCompleted : n.data.completed).map(n => n.id);
-      
+
       const checkLocked = (nId: string): boolean => {
         const parents = edges.filter(e => e.target === nId).map(e => e.source);
         if (parents.length === 0) return false;
@@ -283,7 +283,7 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
         }
         return { ...n, data: { ...n.data, isLocked: checkLocked(n.id) } };
       });
-      
+
       localStorage.setItem(`roadmap_progress_${roadmapId}`, JSON.stringify(completedNodeIds));
 
       if (selectedNode?.id === nodeId) {
@@ -316,7 +316,7 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
   }, [selectedNode, nodes, edges]);
 
   const nodesWithHoverState = useMemo(() => {
-    if (!hoveredNodeId) return nodes.map(n => ({ ...n, data: { ...n.data, isHoveredPath: false, isDimmed: false }}));
+    if (!hoveredNodeId) return nodes.map(n => ({ ...n, data: { ...n.data, isHoveredPath: false, isDimmed: false } }));
     return nodes.map(n => ({
       ...n,
       data: {
@@ -328,7 +328,7 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
   }, [nodes, hoveredNodeId, activePathIds]);
 
   const edgesWithHoverState = useMemo(() => {
-    if (!hoveredNodeId) return edges.map(e => ({ ...e, animated: true, style: { stroke: '#8bc34a', strokeWidth: 2, opacity: 1 }}));
+    if (!hoveredNodeId) return edges.map(e => ({ ...e, animated: true, style: { stroke: '#8bc34a', strokeWidth: 2, opacity: 1 } }));
     return edges.map(e => {
       const isPathEdge = activePathIds.includes(e.source) && activePathIds.includes(e.target);
       return {
@@ -346,14 +346,14 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
 
   const downloadImage = useCallback(() => {
     if (reactFlowWrapper.current === null) return;
-    toPng(reactFlowWrapper.current, { 
-        filter: (node) => !node?.classList?.contains('react-flow__panel') && !node?.classList?.contains('react-flow__controls'),
-        backgroundColor: '#0f0f0f',
+    toPng(reactFlowWrapper.current, {
+      filter: (node) => !node?.classList?.contains('react-flow__panel') && !node?.classList?.contains('react-flow__controls'),
+      backgroundColor: '#0f0f0f',
     }).then((dataUrl) => {
-        const link = document.createElement('a');
-        link.download = `roadmap-${roadmapId}.png`;
-        link.href = dataUrl;
-        link.click();
+      const link = document.createElement('a');
+      link.download = `roadmap-${roadmapId}.png`;
+      link.href = dataUrl;
+      link.click();
     });
   }, [roadmapId]);
 
@@ -368,7 +368,7 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
           transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
         }
       `}</style>
-      
+
       {/* React Flow Canvas */}
       <div className="flex-1 h-full relative">
         <ReactFlow
@@ -383,23 +383,23 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
           fitView
           fitViewOptions={{ nodes: [{ id: 'beginner' }], maxZoom: 1.2, padding: 0.2 }}
           minZoom={0.1}
-          className="bg-[#0f0f0f]"
+          className="bg-background"
           colorMode="dark"
         >
-          <Controls className="bg-[#151515] border-white/10 fill-white text-white" />
-          <MiniMap 
+          <Controls className="bg-secondary border-border fill-white text-foreground" />
+          <MiniMap
             nodeColor={(n) => n.data?.completed ? '#8bc34a' : '#333'}
             maskColor="rgba(0, 0, 0, 0.7)"
-            className="bg-[#151515] border border-white/10"
+            className="bg-secondary border border-border"
           />
           <Background color="#333" gap={16} />
-          
+
           {/* Breadcrumb Navigation */}
           {breadcrumbs.length > 0 && (
-            <Panel position="top-center" className="bg-[#151515]/90 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 max-w-[80%] overflow-x-auto custom-scrollbar">
+            <Panel position="top-center" className="bg-secondary/90 backdrop-blur-md border border-border px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 max-w-[80%] overflow-x-auto custom-scrollbar">
               {breadcrumbs.map((b, i) => (
                 <React.Fragment key={b.id}>
-                  <span className={i === breadcrumbs.length - 1 ? 'text-[#8bc34a]' : 'text-gray-400'}>
+                  <span className={i === breadcrumbs.length - 1 ? 'text-[#8bc34a]' : 'text-muted-foreground'}>
                     {b.data.label as string}
                   </span>
                   {i < breadcrumbs.length - 1 && <span className="text-gray-600">/</span>}
@@ -409,25 +409,25 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
           )}
 
           <Panel position="top-right" className="flex gap-2">
-            <button 
+            <button
               onClick={downloadImage}
-              className="flex items-center gap-2 bg-[#151515] border border-white/10 px-4 py-2 rounded-md text-sm font-semibold hover:bg-white/5 transition-colors"
+              className="flex items-center gap-2 bg-secondary border border-border px-4 py-2 rounded-md text-sm font-semibold hover:bg-muted transition-colors"
             >
               <Download size={16} /> Export PNG
             </button>
           </Panel>
-          
-          <Panel position="top-left" className="bg-[#151515] border border-white/10 p-4 rounded-md min-w-[200px]">
-            <div className="text-sm font-medium text-gray-400 mb-2">Progress</div>
+
+          <Panel position="top-left" className="bg-secondary border border-border p-4 rounded-md min-w-[200px]">
+            <div className="text-sm font-medium text-muted-foreground mb-2">Progress</div>
             <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl font-bold text-white">{progressPercentage}%</span>
-                <span className="text-[#8bc34a] text-sm font-bold">{completedActionableNodes.length} / {actionableNodes.length}</span>
+              <span className="text-2xl font-bold text-foreground">{progressPercentage}%</span>
+              <span className="text-[#8bc34a] text-sm font-bold">{completedActionableNodes.length} / {actionableNodes.length}</span>
             </div>
-            <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-                <div 
-                    className="h-full bg-[#8bc34a] transition-all duration-500 rounded-full" 
-                    style={{ width: `${progressPercentage}%`, minWidth: progressPercentage > 0 ? '8px' : '0px' }}
-                />
+            <div className="w-full bg-accent h-2 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-[#8bc34a] transition-all duration-500 rounded-full"
+                style={{ width: `${progressPercentage}%`, minWidth: progressPercentage > 0 ? '8px' : '0px' }}
+              />
             </div>
           </Panel>
         </ReactFlow>
@@ -435,10 +435,10 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
 
       {/* Side Panel */}
       {selectedNode && (
-        <div className="w-80 h-full bg-[#151515] border-l border-white/10 p-6 flex flex-col shrink-0 animate-in slide-in-from-right relative">
-          <button 
-            onClick={() => setSelectedNode(null)} 
-            className="absolute top-4 right-4 text-gray-400 hover:text-white"
+        <div className="w-80 h-full bg-secondary border-l border-border p-6 flex flex-col shrink-0 animate-in slide-in-from-right relative">
+          <button
+            onClick={() => setSelectedNode(null)}
+            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
           >
             ✕
           </button>
@@ -447,8 +447,8 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
             <Info size={20} />
             <span className="font-bold tracking-wider text-sm">TOPIC DETAILS</span>
           </div>
-          
-          <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+
+          <h2 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
             {Boolean(selectedNode.data.isLocked) && <Lock className="text-gray-500" />}
             {selectedNode.data.label as string}
           </h2>
@@ -458,17 +458,17 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
               Complete the parent topics to unlock this path.
             </div>
           )}
-          
-          <p className="text-gray-400 leading-relaxed mb-4">
+
+          <p className="text-muted-foreground leading-relaxed mb-4">
             {selectedNode.data.description as string || 'No description provided for this topic.'}
           </p>
 
           {Boolean(selectedNode.data.details) && Array.isArray(selectedNode.data.details) && selectedNode.data.details.length > 0 && (
-            <div className="flex-1 overflow-y-auto mb-4 pr-2 custom-scrollbar">
-              <h3 className="text-xs font-bold text-[#8bc34a] mb-3 uppercase tracking-widest border-b border-white/10 pb-2">Key Topics to Learn</h3>
+            <div className="mb-4">
+              <h3 className="text-xs font-bold text-[#8bc34a] mb-3 uppercase tracking-widest border-b border-border pb-2">Key Topics to Learn</h3>
               <ul className="space-y-2.5">
                 {(selectedNode.data.details as string[]).map((detail, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-sm text-gray-300 hover:text-white transition-colors">
+                  <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#8bc34a] mt-1.5 flex-shrink-0" />
                     <span>{detail}</span>
                   </li>
@@ -476,17 +476,44 @@ function InteractiveRoadmapInner({ initialNodes, initialEdges, roadmapId }: Inte
               </ul>
             </div>
           )}
-          
-          <div className="border-t border-white/10 pt-6 mt-auto">
+
+          {Boolean(selectedNode.data.links) && Array.isArray(selectedNode.data.links) && selectedNode.data.links.length > 0 && (
+            <div className="flex-1 overflow-y-auto mb-4 pr-2 custom-scrollbar">
+              <h3 className="text-xs font-bold text-[#8bc34a] mb-3 uppercase tracking-widest border-b border-border pb-2">Resources</h3>
+              <ul className="space-y-3">
+                {(selectedNode.data.links as { title: string; url: string; type: string }[]).map((link, idx) => (
+                  <li key={idx}>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-start gap-3 p-3 rounded-lg bg-muted border border-border/50 hover:bg-accent hover:border-border/50 transition-all group"
+                    >
+                      <div className="mt-0.5 text-muted-foreground group-hover:text-[#8bc34a] transition-colors">
+                        {link.type === 'video' ? <PlayCircle size={16} /> :
+                          link.type === 'article' ? <FileText size={16} /> :
+                            <ExternalLink size={16} />}
+                      </div>
+                      <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground leading-snug">
+                        {link.title}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="border-t border-border pt-6 mt-auto">
             <button
               disabled={selectedNode.data.isLocked as boolean}
               onClick={() => handleNodeCompletion(selectedNode.id, !selectedNode.data.completed)}
               className={cn(
                 "w-full py-3 rounded-md font-bold flex items-center justify-center gap-2 transition-colors",
                 selectedNode.data.isLocked ? "bg-gray-800 text-gray-500 cursor-not-allowed" :
-                selectedNode.data.completed 
-                  ? "bg-white/10 text-white hover:bg-white/20" 
-                  : "bg-[#8bc34a] text-black hover:bg-[#8bc34a]/90"
+                  selectedNode.data.completed
+                    ? "bg-accent text-foreground hover:bg-accent/80"
+                    : "bg-[#8bc34a] text-black hover:bg-[#8bc34a]/90"
               )}
             >
               {selectedNode.data.completed ? (

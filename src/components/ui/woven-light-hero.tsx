@@ -36,11 +36,11 @@ export const WovenLightHero = () => {
   const headline = "Developer Roadmaps";
 
   return (
-    <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#0f0f0f]">
+    <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-background">
       <WovenCanvas />
 
       <div className="relative z-10 text-center px-4 pt-16">
-        <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <h1 className="text-5xl md:text-7xl font-black text-foreground tracking-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
           {headline.split(" ").map((word, i) => (
             <span key={i} className="inline-block">
               {word.split("").map((char, j) => (
@@ -56,7 +56,7 @@ export const WovenLightHero = () => {
           custom={headline.length}
           initial={{ opacity: 0, y: 20 }}
           animate={textControls}
-          className="mx-auto mt-6 max-w-2xl text-lg md:text-xl text-gray-400"
+          className="mx-auto mt-6 max-w-2xl text-lg md:text-xl text-muted-foreground"
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
           Routiq is a community effort to create roadmaps, guides and other educational content to help guide developers in picking up a path and guide their learnings.
@@ -65,7 +65,7 @@ export const WovenLightHero = () => {
           <button className="rounded-md bg-[#8bc34a] px-8 py-3.5 font-bold text-black transition-all hover:bg-[#8bc34a]/90 hover:scale-105 active:scale-95" style={{ fontFamily: "'Inter', sans-serif" }}>
             Role-based Roadmaps
           </button>
-          <button className="rounded-md border border-white/20 bg-white/5 px-8 py-3.5 font-bold text-white transition-all hover:bg-white/10 hover:scale-105 active:scale-95" style={{ fontFamily: "'Inter', sans-serif" }}>
+          <button className="rounded-md border border-border/50 bg-muted px-8 py-3.5 font-bold text-foreground transition-all hover:bg-accent hover:scale-105 active:scale-95" style={{ fontFamily: "'Inter', sans-serif" }}>
             Skill-based Roadmaps
           </button>
         </motion.div>

@@ -51,17 +51,17 @@ export function PricingSection({
 	return (
 		<div
 			className={cn(
-				'flex w-full flex-col items-center justify-center space-y-10 py-20 px-4 bg-[#0f0f0f]',
+				'flex w-full flex-col items-center justify-center space-y-10 py-20 px-4 bg-background',
 				props.className,
 			)}
 			{...props}
 		>
 			<div className="mx-auto max-w-2xl space-y-4">
-				<h2 className="text-center text-4xl font-bold tracking-tight md:text-5xl text-white">
+				<h2 className="text-center text-4xl font-bold tracking-tight md:text-5xl text-foreground">
 					{heading}
 				</h2>
 				{description && (
-					<p className="text-gray-400 text-center text-lg max-w-xl mx-auto">
+					<p className="text-muted-foreground text-center text-lg max-w-xl mx-auto">
 						{description}
 					</p>
 				)}
@@ -91,7 +91,7 @@ export function PricingCard({
 		<div
 			key={plan.name}
 			className={cn(
-				'relative flex w-full flex-col rounded-2xl border border-white/10 bg-[#151515]',
+				'relative flex w-full flex-col rounded-2xl border border-border bg-secondary',
 				className,
 			)}
 			{...props}
@@ -107,7 +107,7 @@ export function PricingCard({
 			)}
 			<div
 				className={cn(
-					'bg-white/5 rounded-t-2xl border-b border-white/10 p-8',
+					'bg-muted rounded-t-2xl border-b border-border p-8',
 					plan.highlighted && 'bg-[#8bc34a]/10 border-[#8bc34a]/30',
 				)}
 			>
@@ -120,15 +120,15 @@ export function PricingCard({
 					)}
 				</div>
 
-				<div className="text-2xl font-bold text-white">{plan.name}</div>
-				<p className="text-gray-400 text-sm mt-2">{plan.info}</p>
+				<div className="text-2xl font-bold text-foreground">{plan.name}</div>
+				<p className="text-muted-foreground text-sm mt-2">{plan.info}</p>
 				<h3 className="mt-4 flex items-end gap-1">
-					<span className="text-4xl font-black text-white">{plan.price.monthly === 0 ? 'Free' : `₹${plan.price[frequency]}`}</span>
+					<span className="text-4xl font-black text-foreground">{plan.price.monthly === 0 ? 'Free' : `₹${plan.price[frequency]}`}</span>
 				</h3>
 			</div>
 			<div
 				className={cn(
-					'text-gray-300 space-y-4 px-8 py-8 text-base flex-1',
+					'text-muted-foreground space-y-4 px-8 py-8 text-base flex-1',
 					plan.highlighted && 'bg-[#8bc34a]/5',
 				)}
 			>
@@ -148,7 +148,7 @@ export function PricingCard({
 									</p>
 								</TooltipTrigger>
 								{feature.tooltip && (
-									<TooltipContent className="bg-[#222] text-white border-white/10">
+									<TooltipContent className="bg-[#222] text-foreground border-border">
 										<p>{feature.tooltip}</p>
 									</TooltipContent>
 								)}
@@ -164,7 +164,7 @@ export function PricingCard({
 				)}
 			>
 				<Button
-					className={cn("w-full py-6 text-lg font-bold rounded-xl", plan.highlighted ? "bg-[#8bc34a] text-black hover:bg-[#8bc34a]/90 hover:scale-[1.02] transition-transform" : "bg-white/10 text-white hover:bg-white/20 hover:scale-[1.02] transition-transform")}
+					className={cn("w-full py-6 text-lg font-bold rounded-xl", plan.highlighted ? "bg-[#8bc34a] text-black hover:bg-[#8bc34a]/90 hover:scale-[1.02] transition-transform" : "bg-accent text-foreground hover:bg-accent/80 hover:scale-[1.02] transition-transform")}
 				>
 					{plan.btn.text}
 				</Button>

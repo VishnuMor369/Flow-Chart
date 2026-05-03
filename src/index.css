@@ -4,9 +4,11 @@
 
 @layer base {
   :root {
-    --background: hsl(0, 0%, 6%);     /* #0f0f0f dark charcoal */
+    --background: hsl(0, 0%, 6%);
+    /* #0f0f0f dark charcoal */
     --foreground: hsl(0, 0%, 98%);
-    --primary: hsl(88, 50%, 53%);    /* #8bc34a Lime/Yellow-green */
+    --primary: hsl(88, 50%, 53%);
+    /* #8bc34a Lime/Yellow-green */
     --primary-foreground: hsl(0, 0%, 10%);
     --secondary: hsl(0, 0%, 15%);
     --secondary-foreground: hsl(0, 0%, 98%);
@@ -30,6 +32,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground font-sans;
   }

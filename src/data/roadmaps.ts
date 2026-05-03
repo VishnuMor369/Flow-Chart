@@ -6,6 +6,7 @@ export interface TopicData {
   label: string;
   desc: string;
   details?: string[];
+  links?: { title: string; url: string; type: 'video' | 'article' | 'course' }[];
   parents?: string[];
   depth?: number;
   phase?: 'beginner' | 'intermediate' | 'advanced';
@@ -56,6 +57,7 @@ const generateGraph = (topics: TopicData[]) => {
         label: topic.label,
         description: topic.desc,
         details: topic.details || [],
+        links: topic.links || [],
         completed: false,
         expanded: true, 
         depth: depth,
@@ -91,6 +93,7 @@ const generateGraph = (topics: TopicData[]) => {
             label: detail,
             description: `Part of ${topic.label}`,
             details: [],
+            links: [],
             completed: false,
             expanded: true,
             depth: detailDepth,
@@ -117,212 +120,223 @@ const generateGraph = (topics: TopicData[]) => {
 
 // --- FRONTEND ---
 export const frontendData = generateGraph([
-  { id: 'internet', label: 'Internet', desc: 'Understand how the internet works.', phase: 'beginner' },
-  { id: 'how-dns', label: 'How DNS works', desc: 'Domain Name System.', parents: ['internet'], phase: 'beginner', details: ['A Records', 'CNAME Records', 'Name Servers'] },
-  { id: 'how-http', label: 'HTTP / HTTPS', desc: 'Hypertext Transfer Protocol.', parents: ['internet'], phase: 'beginner', details: ['Status Codes', 'Request Methods', 'Headers'] },
+  { id: 'internet', label: 'Internet', desc: 'How does the internet work?', phase: 'beginner' },
+  { id: 'internet-dns', label: 'DNS', desc: 'Domain Name System', parents: ['internet'], phase: 'beginner' },
+  { id: 'internet-http', label: 'HTTP / HTTPS', desc: 'Hypertext Transfer Protocol', parents: ['internet'], phase: 'beginner' },
+  { id: 'internet-hosting', label: 'Hosting', desc: 'Web Hosting Basics', parents: ['internet'], phase: 'beginner' },
   
-  { id: 'html', label: 'HTML', desc: 'Basics of HTML.', parents: ['internet'], phase: 'beginner' },
-  { id: 'html-forms', label: 'Forms and Validations', desc: 'Collecting user input.', parents: ['html'], phase: 'beginner', details: ['Input Types', 'Form Attributes', 'Custom Validation'] },
-  { id: 'html-seo', label: 'SEO Basics', desc: 'Meta tags and semantic HTML.', parents: ['html'], phase: 'beginner', details: ['Meta tags', 'Semantic HTML', 'Robots.txt'] },
+  { id: 'html', label: 'HTML', desc: 'HyperText Markup Language', parents: ['internet'], phase: 'beginner' },
+  { id: 'html-basics', label: 'Basics', desc: 'Tags, Elements, Attributes', parents: ['html'], phase: 'beginner' },
+  { id: 'html-forms', label: 'Forms and Validations', desc: 'Inputs and constraints', parents: ['html'], phase: 'beginner' },
+  { id: 'html-seo', label: 'SEO Basics', desc: 'Search Engine Optimization', parents: ['html'], phase: 'beginner' },
+  { id: 'html-accessibility', label: 'Accessibility', desc: 'A11y fundamentals', parents: ['html'], phase: 'beginner' },
 
-  { id: 'css', label: 'CSS', desc: 'Styling the web.', parents: ['html'], phase: 'beginner' },
-  { id: 'css-layout', label: 'Layouts', desc: 'Positioning elements.', parents: ['css'], phase: 'beginner', details: ['Flexbox', 'CSS Grid', 'Floats', 'Positioning'] },
-  { id: 'css-responsive', label: 'Responsive Design', desc: 'Media queries and mobile-first.', parents: ['css'], phase: 'beginner', details: ['Media Queries', 'rem vs em', 'Mobile-first approach'] },
+  { id: 'css', label: 'CSS', desc: 'Cascading Style Sheets', parents: ['html'], phase: 'beginner' },
+  { id: 'css-basics', label: 'Basics', desc: 'Selectors, Specificity, Box Model', parents: ['css'], phase: 'beginner' },
+  { id: 'css-layout', label: 'Layouts', desc: 'Flexbox, Grid, Positioning', parents: ['css'], phase: 'beginner' },
+  { id: 'css-responsive', label: 'Responsive Design', desc: 'Media Queries, Mobile-first', parents: ['css'], phase: 'beginner' },
 
-  { id: 'js', label: 'JavaScript', desc: 'Making the web interactive.', parents: ['css'], phase: 'intermediate' },
-  { id: 'js-dom', label: 'DOM Manipulation', desc: 'Interacting with HTML via JS.', parents: ['js'], phase: 'intermediate', details: ['Selecting elements', 'Modifying classes/styles', 'Event Listeners'] },
-  { id: 'js-async', label: 'Async JS', desc: 'Promises, Async/Await.', parents: ['js'], phase: 'intermediate', details: ['Callbacks', 'Promises', 'Async/Await', 'Event Loop'] },
-  { id: 'js-apis', label: 'Web APIs', desc: 'Fetch, Storage, etc.', parents: ['js'], phase: 'intermediate', details: ['Fetch API', 'Local Storage', 'Session Storage'] },
+  { id: 'js', label: 'JavaScript', desc: 'Adding interactivity', parents: ['css'], phase: 'intermediate' },
+  { id: 'js-basics', label: 'Syntax & Basic Constructs', desc: 'Variables, Types, Functions', parents: ['js'], phase: 'intermediate' },
+  { id: 'js-dom', label: 'DOM Manipulation', desc: 'Selecting, Modifying elements', parents: ['js'], phase: 'intermediate' },
+  { id: 'js-fetch', label: 'Fetch API / Ajax', desc: 'Network requests', parents: ['js'], phase: 'intermediate' },
+  { id: 'js-es6', label: 'ES6+ Features', desc: 'Arrow functions, destructuring', parents: ['js'], phase: 'intermediate' },
+  { id: 'js-async', label: 'Async JavaScript', desc: 'Promises, Async/Await', parents: ['js'], phase: 'intermediate' },
+
+  { id: 'vcs', label: 'Version Control Systems', desc: 'Tracking code changes', parents: ['js'], phase: 'intermediate' },
+  { id: 'vcs-git', label: 'Git Basics', desc: 'Commits, Branches, Merges', parents: ['vcs'], phase: 'intermediate' },
+  { id: 'vcs-github', label: 'GitHub/GitLab', desc: 'Remote repositories', parents: ['vcs'], phase: 'intermediate' },
+
+  { id: 'pkg-mgr', label: 'Package Managers', desc: 'npm, yarn, pnpm', parents: ['vcs'], phase: 'intermediate' },
+  { id: 'css-arch', label: 'CSS Architecture', desc: 'BEM, Tailwind, CSS-in-JS', parents: ['pkg-mgr'], phase: 'intermediate' },
+  { id: 'css-pre', label: 'CSS Preprocessors', desc: 'Sass, Less, PostCSS', parents: ['css-arch'], phase: 'intermediate' },
+
+  { id: 'frameworks', label: 'Frontend Frameworks', desc: 'React, Vue, Angular', parents: ['css-pre'], phase: 'intermediate' },
+  { id: 'react', label: 'React.js', desc: 'Component based UI', parents: ['frameworks'], phase: 'intermediate', details: ['Hooks', 'Context', 'JSX'] },
   
-  { id: 'vcs', label: 'Version Control', desc: 'Git and GitHub.', parents: ['js'], phase: 'intermediate', details: ['Git Basics', 'Branching', 'Merging', 'Rebasing', 'GitHub/GitLab'] },
+  { id: 'state-mgmt', label: 'State Management', desc: 'Redux, Zustand, Vuex', parents: ['frameworks'], phase: 'advanced' },
   
-  { id: 'frameworks', label: 'Frameworks', desc: 'React, Vue, or Angular.', parents: ['vcs'], phase: 'intermediate' },
-  { id: 'react', label: 'React.js', desc: 'Component based UI.', parents: ['frameworks'], phase: 'intermediate', details: ['Components', 'JSX', 'Props & State'] },
-  { id: 'react-hooks', label: 'Hooks', desc: 'useState, useEffect, etc.', parents: ['react'], phase: 'intermediate', details: ['useState', 'useEffect', 'useContext', 'useMemo', 'Custom Hooks'] },
-  { id: 'react-router', label: 'Routing', desc: 'React Router Dom.', parents: ['react'], phase: 'intermediate', details: ['BrowserRouter', 'Routes', 'Link', 'useNavigate'] },
-  { id: 'state-mgmt', label: 'State Management', desc: 'Redux, Zustand, etc.', parents: ['react'], phase: 'intermediate', details: ['Redux Toolkit', 'Zustand', 'Context API', 'Jotai'] },
+  { id: 'build-tools', label: 'Build Tools', desc: 'Bundlers, Task Runners', parents: ['state-mgmt'], phase: 'advanced' },
+  { id: 'build-bundlers', label: 'Module Bundlers', desc: 'Webpack, Vite, Rollup', parents: ['build-tools'], phase: 'advanced' },
+  { id: 'build-linters', label: 'Linters & Formatters', desc: 'ESLint, Prettier', parents: ['build-tools'], phase: 'advanced' },
+
+  { id: 'testing', label: 'Testing', desc: 'Quality Assurance', parents: ['build-tools'], phase: 'advanced' },
+  { id: 'test-unit', label: 'Unit Testing', desc: 'Jest, Vitest', parents: ['testing'], phase: 'advanced' },
+  { id: 'test-e2e', label: 'E2E Testing', desc: 'Cypress, Playwright', parents: ['testing'], phase: 'advanced' },
+
+  { id: 'ssr', label: 'SSR / SSG', desc: 'Server Side Rendering', parents: ['testing'], phase: 'advanced' },
+  { id: 'ssr-next', label: 'Next.js', desc: 'React Framework', parents: ['ssr'], phase: 'advanced' },
   
-  { id: 'build-tools', label: 'Build Tools', desc: 'Bundlers and Task Runners.', parents: ['frameworks'], phase: 'advanced', details: ['Vite', 'Webpack', 'esbuild', 'Rollup'] },
-  { id: 'testing', label: 'Testing', desc: 'Ensuring code quality.', parents: ['build-tools'], phase: 'advanced', details: ['Jest', 'React Testing Library', 'Cypress', 'Playwright'] },
-  { id: 'ssr', label: 'SSR / SSG', desc: 'Server Side Rendering.', parents: ['testing'], phase: 'advanced', details: ['Next.js', 'Remix', 'Astro'] },
+  { id: 'graphql', label: 'GraphQL', desc: 'API Query Language', parents: ['ssr'], phase: 'advanced' },
+  { id: 'pwa', label: 'Progressive Web Apps', desc: 'Service Workers, Manifests', parents: ['graphql'], phase: 'advanced' },
 ]);
 
 // --- BACKEND ---
 export const backendData = generateGraph([
-  { id: 'internet', label: 'Internet Basics', desc: 'Understand how the web functions.', phase: 'beginner' },
-  { id: 'dns-http', label: 'DNS & HTTP', desc: 'Networking protocols.', parents: ['internet'], phase: 'beginner', details: ['DNS Resolution', 'HTTP/HTTPS Protocols', 'Ports'] },
+  { id: 'internet', label: 'Internet', desc: 'How does the internet work?', phase: 'beginner' },
+  { id: 'internet-dns', label: 'DNS', desc: 'Domain Name System', parents: ['internet'], phase: 'beginner' },
+  { id: 'internet-http', label: 'HTTP / HTTPS', desc: 'Hypertext Transfer Protocol', parents: ['internet'], phase: 'beginner' },
   
-  { id: 'os', label: 'OS & General Knowledge', desc: 'Core system concepts.', parents: ['internet'], phase: 'beginner' },
-  { id: 'os-terminal', label: 'Terminal Usage', desc: 'Navigating CLI.', parents: ['os'], phase: 'beginner', details: ['Bash/Zsh', 'Basic Commands', 'Piping'] },
-  { id: 'os-threads', label: 'Processes & Threads', desc: 'Concurrency.', parents: ['os'], phase: 'beginner', details: ['Process Management', 'Multithreading', 'Concurrency vs Parallelism'] },
-  
-  { id: 'language', label: 'Programming Language', desc: 'Pick a backend language.', parents: ['os'], phase: 'beginner', details: ['Node.js', 'Python', 'Go', 'Rust', 'Java', 'C#'] },
-  
-  { id: 'vcs', label: 'Version Control', desc: 'Git and GitHub.', parents: ['language'], phase: 'beginner', details: ['Git Commits', 'Branching strategies', 'Pull Requests'] },
-  
-  { id: 'rdbms', label: 'Relational Databases', desc: 'SQL databases.', parents: ['vcs'], phase: 'intermediate' },
-  { id: 'sql', label: 'SQL Basics', desc: 'Writing queries.', parents: ['rdbms'], phase: 'intermediate', details: ['SELECT statements', 'Joins (Inner, Left, Right)', 'Group By', 'Having'] },
-  { id: 'db-design', label: 'Database Design', desc: 'Structuring data properly.', parents: ['rdbms'], phase: 'intermediate', details: ['Normalization (1NF-3NF)', 'Indexes', 'ACID properties', 'N+1 Problem'] },
-  
-  { id: 'nosql', label: 'NoSQL Databases', desc: 'Non-relational data.', parents: ['rdbms'], phase: 'intermediate', details: ['MongoDB', 'Cassandra', 'DynamoDB', 'Document vs Key-Value'] },
-  
-  { id: 'apis', label: 'APIs', desc: 'Communication between services.', parents: ['nosql'], phase: 'intermediate' },
-  { id: 'rest', label: 'RESTful APIs', desc: 'Standard conventions.', parents: ['apis'], phase: 'intermediate', details: ['Resource Naming', 'Status Codes', 'Idempotency'] },
-  { id: 'graphql', label: 'GraphQL', desc: 'Query language for APIs.', parents: ['apis'], phase: 'intermediate', details: ['Schemas', 'Resolvers', 'Mutations'] },
-  
-  { id: 'caching', label: 'Caching', desc: 'Improving performance.', parents: ['apis'], phase: 'intermediate', details: ['Redis', 'Memcached', 'CDN', 'Client-side caching'] },
-  
-  { id: 'security', label: 'Web Security', desc: 'Protecting your application.', parents: ['caching'], phase: 'advanced', details: ['CORS', 'CSP', 'OWASP Top 10', 'Hashing algorithms'] },
-  { id: 'auth', label: 'Authentication', desc: 'Verifying users.', parents: ['security'], phase: 'advanced', details: ['Token-based auth (JWT)', 'Session Auth', 'OAuth 2.0', 'SSO'] },
-  
-  { id: 'testing', label: 'Testing', desc: 'Ensuring backend reliability.', parents: ['security'], phase: 'advanced', details: ['Unit Testing', 'Integration Testing', 'Mocking/Stubbing'] },
-  
-  { id: 'cicd', label: 'CI/CD', desc: 'Continuous Integration & Deployment.', parents: ['testing'], phase: 'advanced', details: ['GitHub Actions', 'Jenkins', 'Automated deployments'] },
-  
-  { id: 'docker', label: 'Containerization', desc: 'Docker and beyond.', parents: ['cicd'], phase: 'advanced', details: ['Docker Basics', 'Docker Compose', 'Containerizing Node/Python apps'] },
-  
-  { id: 'architecture', label: 'Architecture & Patterns', desc: 'Scalable system design.', parents: ['docker'], phase: 'advanced' },
-  { id: 'microservices', label: 'Microservices', desc: 'Decoupling applications.', parents: ['architecture'], phase: 'advanced', details: ['Service Discovery', 'API Gateways', 'Circuit Breakers'] },
-  { id: 'message', label: 'Message Brokers', desc: 'Asynchronous communication.', parents: ['architecture'], phase: 'advanced', details: ['RabbitMQ', 'Apache Kafka', 'Amazon SQS', 'Redis Pub/Sub'] },
-]);
+  { id: 'os', label: 'OS & General Knowledge', desc: 'Terminal, Processes, Threads', parents: ['internet'], phase: 'beginner' },
+  { id: 'os-terminal', label: 'Terminal Usage', desc: 'Bash, Zsh, Basic Commands', parents: ['os'], phase: 'beginner' },
+  { id: 'os-networking', label: 'Networking Basics', desc: 'TCP/IP, Sockets', parents: ['os'], phase: 'beginner' },
 
-// --- FULL STACK ---
-export const fullstackData = generateGraph([
-  { id: 'internet', label: 'Internet Fundamentals', desc: 'Understand the web, HTTP, and DNS.', phase: 'beginner', details: ['HTTP/HTTPS', 'DNS', 'Domain Names'] },
+  { id: 'language', label: 'Programming Language', desc: 'Node.js, Python, Java, Go, etc.', parents: ['os'], phase: 'beginner' },
   
-  { id: 'frontend', label: 'Frontend Basics', desc: 'HTML, CSS, and basic JavaScript.', parents: ['internet'], phase: 'beginner' },
-  { id: 'html-css', label: 'HTML & CSS', desc: 'Structure and styles.', parents: ['frontend'], phase: 'beginner', details: ['Semantic HTML', 'CSS Flexbox/Grid'] },
-  { id: 'js', label: 'JavaScript', desc: 'Interactivity.', parents: ['frontend'], phase: 'beginner', details: ['JS DOM Manipulation', 'JS ES6+ Features'] },
+  { id: 'vcs', label: 'Version Control', desc: 'Git and GitHub', parents: ['language'], phase: 'beginner' },
   
-  { id: 'vcs', label: 'Version Control', desc: 'Git and GitHub.', parents: ['frontend'], phase: 'beginner', details: ['Commits', 'Branches', 'Merging'] },
+  { id: 'rdbms', label: 'Relational Databases', desc: 'SQL databases', parents: ['vcs'], phase: 'intermediate' },
+  { id: 'sql', label: 'SQL Basics', desc: 'SELECT, JOINs, Group By', parents: ['rdbms'], phase: 'intermediate' },
+  { id: 'rdbms-postgres', label: 'PostgreSQL', desc: 'Advanced relational DB', parents: ['rdbms'], phase: 'intermediate' },
+  { id: 'db-design', label: 'Database Design', desc: 'Normalization, Indexes, ACID', parents: ['rdbms'], phase: 'intermediate' },
   
-  { id: 'framework', label: 'Frontend Framework', desc: 'React, Vue, or Angular.', parents: ['vcs'], phase: 'intermediate' },
-  { id: 'react', label: 'React.js', desc: 'UI Library.', parents: ['framework'], phase: 'intermediate', details: ['Components', 'State & Props', 'React Router', 'Hooks'] },
-  { id: 'css-fw', label: 'CSS Frameworks', desc: 'Tailwind, Styled Components.', parents: ['framework'], phase: 'intermediate', details: ['Tailwind CSS', 'CSS Modules', 'Sass'] },
+  { id: 'nosql', label: 'NoSQL Databases', desc: 'Document, Key-Value, Graph', parents: ['rdbms'], phase: 'intermediate' },
+  { id: 'nosql-mongo', label: 'MongoDB', desc: 'Document store', parents: ['nosql'], phase: 'intermediate' },
   
-  { id: 'backend-lang', label: 'Backend Language', desc: 'Node.js or Python.', parents: ['framework'], phase: 'intermediate', details: ['Node.js', 'Express.js', 'Python/Django', 'API creation'] },
+  { id: 'apis', label: 'APIs', desc: 'REST, GraphQL, gRPC', parents: ['nosql'], phase: 'intermediate' },
+  { id: 'rest', label: 'RESTful APIs', desc: 'Standard conventions', parents: ['apis'], phase: 'intermediate' },
+  { id: 'graphql', label: 'GraphQL', desc: 'Query language for APIs', parents: ['apis'], phase: 'intermediate' },
   
-  { id: 'databases', label: 'Databases', desc: 'SQL and NoSQL.', parents: ['backend-lang'], phase: 'intermediate' },
-  { id: 'sql', label: 'PostgreSQL/MySQL', desc: 'Relational.', parents: ['databases'], phase: 'intermediate', details: ['Schemas', 'Queries', 'Prisma ORM'] },
-  { id: 'nosql', label: 'MongoDB', desc: 'Document based.', parents: ['databases'], phase: 'intermediate', details: ['Documents', 'Collections', 'Mongoose'] },
+  { id: 'caching', label: 'Caching', desc: 'Redis, Memcached', parents: ['apis'], phase: 'intermediate' },
+  { id: 'caching-redis', label: 'Redis', desc: 'In-memory data store', parents: ['caching'], phase: 'intermediate' },
   
-  { id: 'apis', label: 'APIs & Integration', desc: 'REST APIs and connecting frontend to backend.', parents: ['databases'], phase: 'intermediate', details: ['REST Conventions', 'Fetching data in React', 'CORS issues'] },
+  { id: 'security', label: 'Web Security Knowledge', desc: 'CORS, HTTPS, OWASP', parents: ['caching'], phase: 'advanced' },
+  { id: 'security-auth', label: 'Authentication', desc: 'JWT, OAuth, Sessions', parents: ['security'], phase: 'advanced' },
+  { id: 'security-hashing', label: 'Hashing', desc: 'Bcrypt, Scrypt', parents: ['security'], phase: 'advanced' },
   
-  { id: 'auth', label: 'Authentication', desc: 'JWT, OAuth, and session management.', parents: ['apis'], phase: 'advanced', details: ['JWT (JSON Web Tokens)', 'Cookies', 'OAuth 2.0', 'Password Hashing (Bcrypt)'] },
+  { id: 'testing', label: 'Testing', desc: 'Unit, Integration, E2E', parents: ['security'], phase: 'advanced' },
   
-  { id: 'ssr', label: 'Meta Frameworks', desc: 'Next.js for Full Stack.', parents: ['auth'], phase: 'advanced' },
-  { id: 'nextjs', label: 'Next.js Features', desc: 'SSR, SSG, API routes.', parents: ['ssr'], phase: 'advanced', details: ['Server Components', 'API Routes', 'App Router', 'Data Fetching'] },
+  { id: 'cicd', label: 'CI/CD', desc: 'Continuous Integration & Deployment', parents: ['testing'], phase: 'advanced' },
   
-  { id: 'deployment', label: 'Deployment', desc: 'Vercel, Heroku, or VPS.', parents: ['ssr'], phase: 'advanced', details: ['Vercel deployment', 'Render', 'Linux Server basics', 'Nginx reverse proxy'] },
+  { id: 'docker', label: 'Containerization', desc: 'Docker, Podman', parents: ['cicd'], phase: 'advanced' },
   
-  { id: 'docker', label: 'Containerization', desc: 'Dockerizing full stack applications.', parents: ['deployment'], phase: 'advanced', details: ['Dockerfiles', 'Docker Compose for Fullstack'] },
+  { id: 'architecture', label: 'Architecture & System Design', desc: 'Monoliths vs Microservices', parents: ['docker'], phase: 'advanced' },
+  { id: 'arch-message', label: 'Message Brokers', desc: 'RabbitMQ, Kafka', parents: ['architecture'], phase: 'advanced' },
+  { id: 'arch-websockets', label: 'WebSockets', desc: 'Real-time communication', parents: ['architecture'], phase: 'advanced' },
+  { id: 'arch-graphql', label: 'GraphQL Server', desc: 'Apollo Server', parents: ['architecture'], phase: 'advanced' },
 ]);
 
 // --- DEVOPS ---
 export const devopsData = generateGraph([
-  { id: 'language', label: 'Programming Language', desc: 'Learn Python, Go, or Ruby for scripting.', phase: 'beginner', details: ['Python', 'Go', 'Bash Scripting', 'Ruby'] },
+  { id: 'prereq', label: 'Learn a Programming Language', desc: 'Python, Go, Node.js, Ruby, C++', phase: 'beginner' },
   
-  { id: 'os', label: 'OS Concepts', desc: 'Linux basics, terminal, and networking.', parents: ['language'], phase: 'beginner' },
-  { id: 'linux', label: 'Linux Admin', desc: 'Managing linux servers.', parents: ['os'], phase: 'beginner', details: ['Linux Kernel', 'Shell commands', 'Process Management', 'File Systems'] },
-  { id: 'networking', label: 'Networking & Security', desc: 'Protocols and firewalls.', parents: ['os'], phase: 'beginner', details: ['OSI Model', 'TCP/IP', 'DNS', 'HTTP/HTTPS', 'SSH', 'Firewalls', 'SSL/TLS'] },
+  { id: 'os', label: 'OS Concepts', desc: 'Process Management, Threads, Sockets', parents: ['prereq'], phase: 'beginner' },
+  { id: 'os-terminal', label: 'Learn to live in terminal', desc: 'Bash Scripting, Text Manipulation (awk, sed, grep)', parents: ['os'], phase: 'beginner' },
+  { id: 'os-networking', label: 'Networking & Security', desc: 'DNS, OSI Model, HTTP/HTTPS, SSL/TLS', parents: ['os-terminal'], phase: 'beginner' },
   
-  { id: 'servers', label: 'Server Management', desc: 'Web servers and reverse proxies.', parents: ['networking'], phase: 'beginner', details: ['Nginx', 'Apache', 'HAProxy', 'Forward/Reverse Proxies'] },
+  { id: 'servers', label: 'Server Management', desc: 'Reverse Proxies, Caching Server, Forward Proxy', parents: ['os-networking'], phase: 'intermediate' },
+  { id: 'servers-nginx', label: 'Nginx / Apache', desc: 'Web server setup', parents: ['servers'], phase: 'intermediate' },
   
-  { id: 'containers', label: 'Containers', desc: 'Docker and containerization concepts.', parents: ['servers'], phase: 'intermediate' },
-  { id: 'docker', label: 'Docker Mastery', desc: 'Images and containers.', parents: ['containers'], phase: 'intermediate', details: ['Dockerfiles', 'LXC', 'Container vs VM', 'Docker Compose'] },
+  { id: 'containers', label: 'Containers', desc: 'Docker, Podman', parents: ['servers'], phase: 'intermediate' },
+  { id: 'containers-orchestration', label: 'Container Orchestration', desc: 'Kubernetes, Docker Swarm', parents: ['containers'], phase: 'intermediate' },
   
-  { id: 'cicd', label: 'CI/CD', desc: 'Automation pipelines.', parents: ['containers'], phase: 'intermediate' },
-  { id: 'github-actions', label: 'GitHub Actions', desc: 'CI/CD workflows.', parents: ['cicd'], phase: 'intermediate', details: ['Workflows', 'Runners', 'Secrets', 'Matrix builds'] },
-  { id: 'jenkins', label: 'Jenkins', desc: 'Classic CI/CD.', parents: ['cicd'], phase: 'intermediate', details: ['Pipelines', 'Plugins', 'Nodes'] },
+  { id: 'cicd', label: 'CI/CD Pipelines', desc: 'Jenkins, GitHub Actions, GitLab CI', parents: ['containers-orchestration'], phase: 'intermediate' },
   
-  { id: 'iac', label: 'Infrastructure as Code', desc: 'Managing infrastructure via code.', parents: ['cicd'], phase: 'intermediate' },
-  { id: 'terraform', label: 'Terraform', desc: 'Provisioning.', parents: ['iac'], phase: 'intermediate', details: ['Providers', 'Modules', 'State management'] },
-  { id: 'ansible', label: 'Ansible', desc: 'Configuration.', parents: ['iac'], phase: 'intermediate', details: ['Playbooks', 'Inventories', 'Roles'] },
+  { id: 'cloud', label: 'Cloud Providers', desc: 'AWS, Azure, Google Cloud', parents: ['cicd'], phase: 'advanced' },
   
-  { id: 'orchestration', label: 'Container Orchestration', desc: 'Kubernetes (K8s).', parents: ['iac'], phase: 'advanced' },
-  { id: 'k8s', label: 'Kubernetes', desc: 'Managing clusters.', parents: ['orchestration'], phase: 'advanced', details: ['Architecture', 'Pods & Deployments', 'Services & Ingress', 'Helm Charts'] },
-  { id: 'service-mesh', label: 'Service Mesh', desc: 'Advanced microservices networking.', parents: ['orchestration'], phase: 'advanced', details: ['Istio', 'Linkerd', 'Consul'] },
+  { id: 'iac', label: 'Infrastructure as Code', desc: 'Terraform, CloudFormation, Pulumi', parents: ['cloud'], phase: 'advanced' },
+  { id: 'iac-config', label: 'Configuration Management', desc: 'Ansible, Chef, Puppet', parents: ['iac'], phase: 'advanced' },
   
-  { id: 'cloud', label: 'Cloud Providers', desc: 'AWS, GCP, or Azure.', parents: ['orchestration'], phase: 'advanced' },
-  { id: 'aws', label: 'AWS Essentials', desc: 'Amazon Web Services.', parents: ['cloud'], phase: 'advanced', details: ['EC2', 'S3', 'RDS', 'VPC', 'IAM'] },
+  { id: 'monitoring', label: 'Infrastructure Monitoring', desc: 'Prometheus, Grafana, Datadog', parents: ['iac-config'], phase: 'advanced' },
+  { id: 'logs', label: 'Application Logs Management', desc: 'ELK Stack, Splunk, Loki', parents: ['monitoring'], phase: 'advanced' },
   
-  { id: 'monitoring', label: 'Monitoring & Logging', desc: 'Observability tools.', parents: ['cloud'], phase: 'advanced' },
-  { id: 'prometheus', label: 'Prometheus & Grafana', desc: 'Metrics and dashboards.', parents: ['monitoring'], phase: 'advanced', details: ['PromQL', 'Exporters', 'Alertmanager'] },
-  { id: 'elk', label: 'ELK Stack', desc: 'Log management.', parents: ['monitoring'], phase: 'advanced', details: ['Elasticsearch', 'Logstash', 'Kibana'] },
+  { id: 'cloud-design', label: 'Cloud Design Patterns', desc: 'High Availability, Auto-scaling', parents: ['logs'], phase: 'advanced' },
+]);
+
+// --- FULL STACK ---
+export const fullstackData = generateGraph([
+  { id: 'internet', label: 'Internet Fundamentals', desc: 'HTTP, DNS, Hosting', phase: 'beginner' },
+  
+  { id: 'frontend', label: 'Frontend Fundamentals', desc: 'HTML, CSS, JavaScript', parents: ['internet'], phase: 'beginner' },
+  { id: 'frontend-react', label: 'Frontend Framework', desc: 'React, Vue, or Angular', parents: ['frontend'], phase: 'intermediate' },
+  
+  { id: 'vcs', label: 'Version Control', desc: 'Git & GitHub', parents: ['frontend-react'], phase: 'intermediate' },
+  
+  { id: 'backend', label: 'Backend Language', desc: 'Node.js, Python, Java, Go', parents: ['vcs'], phase: 'intermediate' },
+  
+  { id: 'db', label: 'Databases', desc: 'Relational (SQL) and NoSQL', parents: ['backend'], phase: 'intermediate' },
+  { id: 'db-sql', label: 'PostgreSQL / MySQL', desc: 'Relational logic', parents: ['db'], phase: 'intermediate' },
+  { id: 'db-nosql', label: 'MongoDB', desc: 'Document databases', parents: ['db'], phase: 'intermediate' },
+  
+  { id: 'api', label: 'APIs', desc: 'REST, GraphQL', parents: ['db'], phase: 'intermediate' },
+  
+  { id: 'auth', label: 'Authentication', desc: 'JWT, OAuth', parents: ['api'], phase: 'advanced' },
+  
+  { id: 'deployment', label: 'Deployment & Hosting', desc: 'Vercel, Heroku, AWS, Docker', parents: ['auth'], phase: 'advanced' },
+  
+  { id: 'testing', label: 'Testing', desc: 'Jest, Cypress', parents: ['deployment'], phase: 'advanced' },
 ]);
 
 // --- MACHINE LEARNING ---
-export const mlData = generateGraph([
-  { id: 'python', label: 'Python Programming', desc: 'Master Python for Data Science.', phase: 'beginner' },
-  { id: 'py-data', label: 'Data Structures', desc: 'Lists, Tuples, Sets, Dictionaries.', parents: ['python'], phase: 'beginner', details: ['Lists & Arrays', 'Tuples', 'Dictionaries & Maps', 'Sets'] },
-  { id: 'py-funcs', label: 'Functions & Classes', desc: 'Functional and OOP Python.', parents: ['python'], phase: 'beginner', details: ['Lambda Functions', 'Decorators', 'Classes', 'Inheritance'] },
-  { id: 'py-files', label: 'File Handling', desc: 'Reading and writing data.', parents: ['python'], phase: 'beginner', details: ['Reading CSVs', 'JSON parsing', 'File streams'] },
+export const machineLearningData = generateGraph([
+  { id: 'math', label: 'Math Foundations', desc: 'Linear Algebra, Calculus', phase: 'beginner' },
+  { id: 'stats', label: 'Statistics & Probability', desc: 'Distributions, Hypothesis Testing', parents: ['math'], phase: 'beginner' },
   
-  { id: 'math', label: 'Mathematics', desc: 'Linear Algebra and Calculus.', parents: ['py-data', 'py-funcs'], phase: 'beginner' },
-  { id: 'math-linear', label: 'Linear Algebra', desc: 'Vectors and Matrices.', parents: ['math'], phase: 'beginner', details: ['Vectors & Matrices', 'Eigenvalues', 'Matrix Multiplication'] },
-  { id: 'math-calc', label: 'Calculus', desc: 'Derivatives and gradients.', parents: ['math'], phase: 'beginner', details: ['Derivatives', 'Partial Derivatives', 'Gradients'] },
-  { id: 'stats', label: 'Statistics', desc: 'Distributions and Probability.', parents: ['math'], phase: 'beginner', details: ['Probability Theory', 'Normal Distribution', 'Bayes Theorem', 'Hypothesis Testing'] },
+  { id: 'python', label: 'Python Programming', desc: 'Core Python skills', parents: ['stats'], phase: 'beginner' },
+  { id: 'python-data', label: 'Data Processing Libraries', desc: 'Pandas, NumPy, SciPy', parents: ['python'], phase: 'beginner' },
+  { id: 'python-viz', label: 'Data Visualization', desc: 'Matplotlib, Seaborn, Plotly', parents: ['python-data'], phase: 'beginner' },
   
-  { id: 'data-manipulation', label: 'Data Manipulation', desc: 'Cleaning and handling data.', parents: ['math-linear', 'math-calc', 'stats'], phase: 'intermediate' },
-  { id: 'data-pandas', label: 'Pandas', desc: 'DataFrames and manipulation.', parents: ['data-manipulation'], phase: 'intermediate', details: ['DataFrames', 'Series', 'Handling Missing Data'] },
-  { id: 'data-numpy', label: 'NumPy', desc: 'Numerical operations.', parents: ['data-manipulation'], phase: 'intermediate', details: ['NDArrays', 'Broadcasting', 'Vectorization'] },
+  { id: 'ml-basics', label: 'Machine Learning Basics', desc: 'Supervised vs Unsupervised', parents: ['python-viz'], phase: 'intermediate' },
+  { id: 'ml-supervised', label: 'Supervised Learning', desc: 'Linear Regression, Logistic Regression, Decision Trees', parents: ['ml-basics'], phase: 'intermediate' },
+  { id: 'ml-unsupervised', label: 'Unsupervised Learning', desc: 'K-Means, PCA', parents: ['ml-supervised'], phase: 'intermediate' },
+  { id: 'ml-eval', label: 'Model Evaluation', desc: 'Cross Validation, Metrics (F1, RMSE)', parents: ['ml-unsupervised'], phase: 'intermediate' },
   
-  { id: 'data-viz', label: 'Data Visualization', desc: 'Understanding data visually.', parents: ['data-pandas', 'data-numpy'], phase: 'intermediate', details: ['Matplotlib', 'Seaborn', 'Plotly', 'Histograms & Scatter plots'] },
+  { id: 'dl', label: 'Deep Learning', desc: 'Neural Networks Fundamentals', parents: ['ml-eval'], phase: 'advanced' },
+  { id: 'dl-frameworks', label: 'Deep Learning Frameworks', desc: 'PyTorch, TensorFlow/Keras', parents: ['dl'], phase: 'advanced' },
+  { id: 'dl-cv', label: 'Computer Vision', desc: 'CNNs, Image Classification, Object Detection', parents: ['dl-frameworks'], phase: 'advanced' },
+  { id: 'dl-nlp', label: 'Natural Language Processing', desc: 'RNNs, LSTMs, Transformers, LLMs', parents: ['dl-cv'], phase: 'advanced' },
   
-  { id: 'classical-ml', label: 'Classical ML', desc: 'Scikit-learn algorithms.', parents: ['data-viz'], phase: 'intermediate' },
-  { id: 'ml-regression', label: 'Regression', desc: 'Predicting continuous values.', parents: ['classical-ml'], phase: 'intermediate', details: ['Linear Regression', 'Ridge/Lasso', 'Polynomial'] },
-  { id: 'ml-classification', label: 'Classification', desc: 'Categorizing data.', parents: ['classical-ml'], phase: 'intermediate', details: ['Logistic Regression', 'SVM', 'Decision Trees', 'Random Forests'] },
-  { id: 'ml-clustering', label: 'Clustering', desc: 'Unsupervised learning.', parents: ['classical-ml'], phase: 'intermediate', details: ['K-Means', 'DBSCAN', 'Hierarchical'] },
-  
-  { id: 'deep-learning', label: 'Deep Learning', desc: 'Neural Networks.', parents: ['ml-regression', 'ml-classification'], phase: 'advanced' },
-  { id: 'dl-basics', label: 'Neural Net Basics', desc: 'Perceptrons and backprop.', parents: ['deep-learning'], phase: 'advanced', details: ['Perceptrons', 'Backpropagation', 'Activation Functions', 'Optimizers'] },
-  { id: 'dl-frameworks', label: 'Frameworks', desc: 'Tools for building models.', parents: ['deep-learning'], phase: 'advanced', details: ['PyTorch', 'TensorFlow', 'Keras'] },
-  
-  { id: 'cv', label: 'Computer Vision', desc: 'Processing images.', parents: ['dl-basics', 'dl-frameworks'], phase: 'advanced', details: ['Convolutional Neural Networks (CNNs)', 'OpenCV', 'Image Classification', 'Object Detection (YOLO)'] },
-  { id: 'nlp', label: 'NLP', desc: 'Processing text and language.', parents: ['dl-basics', 'dl-frameworks'], phase: 'advanced', details: ['Recurrent Neural Networks (RNNs)', 'LSTMs', 'Word Embeddings (Word2Vec)', 'Transformers', 'Hugging Face'] },
-  
-  { id: 'mlops', label: 'MLOps', desc: 'Model deployment and lifecycle.', parents: ['cv', 'nlp'], phase: 'advanced', details: ['Model Serialization (Pickle/ONNX)', 'FastAPI/Flask deployment', 'Docker for ML models', 'MLflow', 'Cloud Deployments (AWS SageMaker)'] },
+  { id: 'mlops', label: 'MLOps', desc: 'Model Deployment, Monitoring, MLflow', parents: ['dl-nlp'], phase: 'advanced' },
 ]);
 
 // --- BLOCKCHAIN ---
 export const blockchainData = generateGraph([
-  { id: 'crypto', label: 'Cryptography Basics', desc: 'The math behind blockchain.', phase: 'beginner' },
-  { id: 'hash', label: 'Hash Functions', desc: 'SHA-256 and similar.', parents: ['crypto'], phase: 'beginner', details: ['Hash Functions (SHA-256)', 'Collision Resistance'] },
-  { id: 'pkc', label: 'Public Key Cryptography', desc: 'Asymmetric encryption.', parents: ['crypto'], phase: 'beginner', details: ['Public/Private Keys', 'Digital Signatures', 'Elliptic Curve Cryptography'] },
+  { 
+    id: 'basics', 
+    label: 'Blockchain Basics', 
+    desc: 'What is Blockchain? How it works?', 
+    phase: 'beginner',
+    links: [
+      { title: 'But how does bitcoin actually work?', url: 'https://www.youtube.com/watch?v=bBC-nXj3Ng4', type: 'video' },
+      { title: 'Blockchain Explained', url: 'https://www.investopedia.com/terms/b/blockchain.asp', type: 'article' }
+    ]
+  },
+  { 
+    id: 'crypto', 
+    label: 'Cryptography', 
+    desc: 'Hash functions, Public Key Cryptography', 
+    parents: ['basics'], 
+    phase: 'beginner',
+    links: [
+      { title: 'Public Key Cryptography', url: 'https://www.youtube.com/watch?v=GSIDS_lvRv4', type: 'video' }
+    ]
+  },
+  { id: 'consensus', label: 'Consensus Mechanisms', desc: 'PoW, PoS, DPoS', parents: ['crypto'], phase: 'beginner' },
   
-  { id: 'fundamentals', label: 'Blockchain Fundamentals', desc: 'How blockchains actually work.', parents: ['hash', 'pkc'], phase: 'beginner' },
-  { id: 'consensus', label: 'Consensus Mechanisms', desc: 'PoW vs PoS.', parents: ['fundamentals'], phase: 'beginner', details: ['Proof of Work', 'Proof of Stake', 'Delegated PoS'] },
-  { id: 'nodes', label: 'Nodes & Networks', desc: 'Decentralized architecture.', parents: ['fundamentals'], phase: 'beginner', details: ['Full Nodes', 'Miners/Validators', 'P2P Networks'] },
+  { id: 'ethereum', label: 'Ethereum Ecosystem', desc: 'EVM, Gas, Accounts', parents: ['consensus'], phase: 'beginner' },
   
-  { id: 'ethereum', label: 'Ethereum Concepts', desc: 'The leading smart contract platform.', parents: ['consensus', 'nodes'], phase: 'intermediate' },
-  { id: 'evm', label: 'EVM & Gas', desc: 'Ethereum Virtual Machine.', parents: ['ethereum'], phase: 'intermediate', details: ['Ethereum Virtual Machine (EVM)', 'Gas & Fees', 'Accounts vs Smart Contracts'] },
+  { id: 'solidity', label: 'Smart Contracts (Solidity)', desc: 'Writing decentralized logic', parents: ['ethereum'], phase: 'intermediate' },
+  { id: 'solidity-advanced', label: 'Advanced Solidity', desc: 'Security patterns, Optimization', parents: ['solidity'], phase: 'intermediate' },
   
-  { id: 'smart-contracts', label: 'Smart Contracts', desc: 'Writing decentralized code.', parents: ['evm'], phase: 'intermediate' },
-  { id: 'solidity', label: 'Solidity', desc: 'Programming language.', parents: ['smart-contracts'], phase: 'intermediate', details: ['Solidity syntax', 'Data Types', 'Functions & Modifiers', 'Events'] },
-  { id: 'standards', label: 'Token Standards', desc: 'ERC tokens.', parents: ['smart-contracts'], phase: 'intermediate', details: ['ERC-20 (Fungible)', 'ERC-721 (NFTs)', 'ERC-1155'] },
+  { id: 'web3', label: 'Web3 Integration', desc: 'ethers.js, web3.js', parents: ['solidity-advanced'], phase: 'intermediate' },
+  { id: 'dapps', label: 'DApp Development', desc: 'React integration, Wagmi, WalletConnect', parents: ['web3'], phase: 'intermediate' },
   
-  { id: 'web3', label: 'Web3.js / Ethers.js', desc: 'Connecting frontend to blockchain.', parents: ['solidity'], phase: 'intermediate', details: ['Ethers.js', 'Web3.js', 'Providers & Signers', 'Contract Interaction', 'React integrations (wagmi)'] },
+  { id: 'frameworks', label: 'Development Frameworks', desc: 'Hardhat, Foundry, Truffle', parents: ['dapps'], phase: 'intermediate' },
   
-  { id: 'frameworks', label: 'Dev Frameworks', desc: 'Testing and deployment tools.', parents: ['web3'], phase: 'intermediate', details: ['Hardhat', 'Foundry', 'Truffle', 'Local Blockchain (Anvil/Ganache)', 'Writing tests in JS/Solidity'] },
+  { id: 'ipfs', label: 'Decentralized Storage', desc: 'IPFS, Arweave', parents: ['frameworks'], phase: 'advanced' },
   
-  { id: 'security', label: 'Security & Auditing', desc: 'Writing safe contracts.', parents: ['frameworks'], phase: 'advanced' },
-  { id: 'vulns', label: 'Common Vulnerabilities', desc: 'What to avoid.', parents: ['security'], phase: 'advanced', details: ['Reentrancy Attacks', 'Integer Overflow/Underflow', 'Front-running', 'Access Control flaws'] },
-  { id: 'audit-tools', label: 'Auditing Tools', desc: 'Automated analysis.', parents: ['security'], phase: 'advanced', details: ['Slither', 'Mythril', 'Echidna'] },
-  
-  { id: 'storage', label: 'Decentralized Storage', desc: 'Storing data off-chain.', parents: ['security'], phase: 'advanced', details: ['IPFS', 'Arweave', 'Filecoin', 'Pinata'] },
-  
-  { id: 'scaling', label: 'L2 Scaling', desc: 'Making blockchains faster.', parents: ['storage'], phase: 'advanced', details: ['Optimistic Rollups', 'ZK Rollups', 'Sidechains (Polygon)'] },
-  
-  { id: 'defi', label: 'DeFi Concepts', desc: 'Decentralized Finance.', parents: ['scaling'], phase: 'advanced', details: ['Decentralized Exchanges (DEXs)', 'Automated Market Makers (AMMs)', 'Liquidity Pools', 'Lending Protocols', 'Flash Loans'] },
+  { id: 'oracles', label: 'Oracles', desc: 'Chainlink, External Data', parents: ['ipfs'], phase: 'advanced' },
+  { id: 'defi', label: 'DeFi Protocols', desc: 'DEXs, Lending, AMMs', parents: ['oracles'], phase: 'advanced' },
+  { id: 'security', label: 'Smart Contract Security', desc: 'Reentrancy, Auditing tools', parents: ['defi'], phase: 'advanced' },
 ]);
 
 export const getRoadmapById = (id: string) => {
   switch (id) {
     case 'frontend': return frontendData;
     case 'backend': return backendData;
-    case 'full-stack': return fullstackData;
     case 'devops': return devopsData;
-    case 'machine-learning': return mlData;
+    case 'full-stack': return fullstackData;
+    case 'machine-learning': return machineLearningData;
     case 'blockchain': return blockchainData;
     default: return frontendData;
   }

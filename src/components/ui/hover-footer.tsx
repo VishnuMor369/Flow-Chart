@@ -177,16 +177,16 @@ export default function HoverFooter() {
   ];
 
   return (
-    <footer className="bg-[#050505] relative h-fit rounded-t-3xl overflow-hidden mt-8 border-t border-white/5">
+    <footer className="bg-[#050505] relative h-fit rounded-t-3xl overflow-hidden mt-8 border-t border-border/50">
       <div className="max-w-7xl mx-auto px-10 py-16 z-40 relative">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-12">
           {/* Brand section */}
           <div className="flex flex-col space-y-4 col-span-1 lg:col-span-2">
             <div className="flex items-center space-x-2">
               <span className="text-[#8bc34a] text-3xl font-extrabold">R</span>
-              <span className="text-white text-3xl font-bold tracking-tight">outiq</span>
+              <span className="text-foreground text-3xl font-bold tracking-tight">outiq</span>
             </div>
-            <p className="text-sm leading-relaxed text-gray-400 max-w-sm">
+            <p className="text-sm leading-relaxed text-muted-foreground max-w-sm">
               Community created roadmaps, best practices, projects, articles, resources and journeys to help you choose your path and grow in your career.
             </p>
           </div>
@@ -194,7 +194,7 @@ export default function HoverFooter() {
           {/* Footer link sections */}
           {footerLinks.map((section) => (
             <div key={section.title}>
-              <h4 className="text-white text-lg font-bold mb-6">
+              <h4 className="text-foreground text-lg font-bold mb-6">
                 {section.title}
               </h4>
               <ul className="space-y-3">
@@ -202,7 +202,7 @@ export default function HoverFooter() {
                   <li key={link.label} className="relative inline-block">
                     <a
                       href={link.href}
-                      className="text-gray-400 hover:text-[#8bc34a] transition-colors"
+                      className="text-muted-foreground hover:text-[#8bc34a] transition-colors"
                     >
                       {link.label}
                     </a>
@@ -216,7 +216,7 @@ export default function HoverFooter() {
           ))}
         </div>
 
-        <hr className="border-t border-white/10 my-8" />
+        <hr className="border-t border-border my-8" />
 
         <div className="flex flex-col md:flex-row justify-between items-center text-sm space-y-4 md:space-y-0 text-gray-500">
           <div className="flex space-x-6">

@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon';
 import { createPortal } from 'react-dom';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 import {
 	NavigationMenu,
 	NavigationMenuContent,
@@ -44,7 +45,10 @@ type HeaderProps = {
 
 export function Header({ onAiTutorClick }: HeaderProps = {}) {
 	const [open, setOpen] = React.useState(false);
+	const [profileOpen, setProfileOpen] = React.useState(false);
 	const scrolled = useScroll(10);
+	const { user, signOut, loading: authLoading } = useAuth();
+	const navigate = useNavigate();
 
 	React.useEffect(() => {
 		if (open) {
@@ -105,12 +109,54 @@ export function Header({ onAiTutorClick }: HeaderProps = {}) {
 					</NavigationMenu>
 				</div>
 				<div className="hidden items-center gap-2 md:flex">
-					<Button variant="ghost" className="hover:text-[#8bc34a]" asChild>
-						<a href="/#signin">Log In</a>
-					</Button>
-					<Button className="bg-[#8bc34a] text-black hover:bg-[#8bc34a]/90 font-semibold" asChild>
-						<a href="/#signin">Sign Up</a>
-					</Button>
+					{user ? (
+						<div className="relative">
+							<button
+								onClick={() => setProfileOpen(!profileOpen)}
+								className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 hover:border-[#8bc34a]/30 hover:bg-white/5 transition-all"
+							>
+								{user.user_metadata?.avatar_url ? (
+									<img src={user.user_metadata.avatar_url} alt="" className="w-6 h-6 rounded-full" />
+								) : (
+									<div className="w-6 h-6 rounded-full bg-[#8bc34a] flex items-center justify-center text-black text-xs font-bold">
+										{(user.email?.[0] || 'U').toUpperCase()}
+									</div>
+								)}
+								<span className="text-sm font-medium text-gray-300 max-w-[120px] truncate">
+									{user.user_metadata?.full_name || user.email?.split('@')[0]}
+								</span>
+							</button>
+							{profileOpen && (
+								<>
+									<div className="fixed inset-0 z-40" onClick={() => setProfileOpen(false)} />
+									<div className="absolute right-0 top-full mt-2 w-48 bg-[#151515] border border-white/10 rounded-xl shadow-2xl z-50 py-1 overflow-hidden">
+										<button
+											onClick={() => { setProfileOpen(false); navigate('/dashboard'); }}
+											className="w-full px-4 py-2.5 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-[#8bc34a] transition-colors"
+										>
+											Dashboard
+										</button>
+										<hr className="border-white/10 my-1" />
+										<button
+											onClick={async () => { setProfileOpen(false); await signOut(); navigate('/'); }}
+											className="w-full px-4 py-2.5 text-left text-sm text-red-400 hover:bg-red-400/5 transition-colors"
+										>
+											Sign Out
+										</button>
+									</div>
+								</>
+							)}
+						</div>
+					) : (
+						<>
+							<Button variant="ghost" className="hover:text-[#8bc34a]" asChild>
+								<Link to="/login">Log In</Link>
+							</Button>
+							<Button className="bg-[#8bc34a] text-black hover:bg-[#8bc34a]/90 font-semibold" asChild>
+								<Link to="/login">Sign Up</Link>
+							</Button>
+						</>
+					)}
 				</div>
 				<Button
 					size="icon"
@@ -134,12 +180,28 @@ export function Header({ onAiTutorClick }: HeaderProps = {}) {
 					</div>
 				</NavigationMenu>
 				<div className="flex flex-col gap-2">
-					<Button variant="outline" className="w-full bg-transparent" asChild>
-						<a href="/#signin">Log In</a>
-					</Button>
-					<Button className="w-full bg-[#8bc34a] text-black" asChild>
-						<a href="/#signin">Sign Up</a>
-					</Button>
+					{user ? (
+						<>
+							<Button variant="outline" className="w-full bg-transparent" asChild>
+								<Link to="/dashboard">Dashboard</Link>
+							</Button>
+							<Button
+								className="w-full bg-red-500/10 text-red-400 border border-red-400/20"
+								onClick={async () => { await signOut(); navigate('/'); setOpen(false); }}
+							>
+								Sign Out
+							</Button>
+						</>
+					) : (
+						<>
+							<Button variant="outline" className="w-full bg-transparent" asChild>
+								<Link to="/login">Log In</Link>
+							</Button>
+							<Button className="w-full bg-[#8bc34a] text-black" asChild>
+								<Link to="/login">Sign Up</Link>
+							</Button>
+						</>
+					)}
 				</div>
 			</MobileMenu>
 		</header>

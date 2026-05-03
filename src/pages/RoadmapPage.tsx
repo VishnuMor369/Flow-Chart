@@ -11,13 +11,13 @@ export default function RoadmapPage() {
   const roadmapName = id ? id.replace('-', ' ').toUpperCase() : 'ROADMAP';
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0f0f0f] text-white">
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
       <Header />
       
       <main className="flex-1 flex flex-col pt-20">
-        <div className="px-8 py-4 border-b border-white/10 flex items-center justify-between bg-[#151515]">
+        <div className="px-8 py-4 border-b border-border flex items-center justify-between bg-secondary">
           <div className="flex items-center gap-4">
-            <Link to="/" className="p-2 hover:bg-white/10 rounded-full transition-colors">
+            <Link to="/" className="p-2 hover:bg-accent rounded-full transition-colors">
               <ArrowLeft size={20} />
             </Link>
             <h1 className="text-2xl font-bold tracking-tight text-[#8bc34a]">

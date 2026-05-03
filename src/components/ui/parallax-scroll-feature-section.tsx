@@ -1,13 +1,19 @@
 'use client'
 
 import { useRef } from "react"
+import { useNavigate } from 'react-router-dom'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { ArrowDown } from "lucide-react"
+import { useAuth } from '@/context/AuthContext'
 
 export const ParallaxScrollFeatureSection = () => {
+    const navigate = useNavigate();
+    const { user } = useAuth();
+
     const sections = [
         {
             id: 1,
+            route: '/roadmap/frontend',
             title: "Frontend Roadmap",
             description: "Step by step guide to becoming a modern frontend developer. Learn HTML, CSS, JavaScript, Frameworks, and best practices.",
             imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop',
@@ -15,6 +21,7 @@ export const ParallaxScrollFeatureSection = () => {
         },
         {
             id: 2,
+            route: '/roadmap/backend',
             title: "Backend Roadmap",
             description: "Master server-side programming. Explore databases, APIs, scaling, architecture, and security concepts in depth.",
             imageUrl: 'https://media.geeksforgeeks.org/wp-content/uploads/20240529152324/Backend-Developer-Roadmap-copy.webp',
@@ -22,10 +29,35 @@ export const ParallaxScrollFeatureSection = () => {
         },
         {
             id: 3,
+            route: '/roadmap/devops',
             title: "DevOps Roadmap",
             description: "Automate and streamline the development lifecycle. Master CI/CD, containerization, cloud providers, and monitoring.",
             imageUrl: 'https://www.jeeviacademy.com/wp-content/uploads/2026/01/Screenshot-2026-01-21-172934.png',
             reverse: false
+        },
+        {
+            id: 4,
+            route: '/roadmap/full-stack',
+            title: "Full Stack Roadmap",
+            description: "Become a complete developer by mastering both frontend and backend technologies, databases, and deployment.",
+            imageUrl: 'https://images.unsplash.com/photo-1627398240308-2d45b736b431?q=80&w=2070&auto=format&fit=crop',
+            reverse: true
+        },
+        {
+            id: 5,
+            route: '/roadmap/machine-learning',
+            title: "Machine Learning Roadmap",
+            description: "Dive into data science, AI, deep learning, and MLOps. Learn Python, statistics, algorithms, and models.",
+            imageUrl: 'https://images.unsplash.com/photo-1555949963-aa79dcee57d5?q=80&w=2070&auto=format&fit=crop',
+            reverse: false
+        },
+        {
+            id: 6,
+            route: '/roadmap/blockchain',
+            title: "Blockchain Roadmap",
+            description: "Build decentralized applications. Learn cryptography, Ethereum, smart contracts, Solidity, and Web3 integration.",
+            imageUrl: 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?q=80&w=2069&auto=format&fit=crop',
+            reverse: true
         }
     ]
 
@@ -51,9 +83,9 @@ export const ParallaxScrollFeatureSection = () => {
     );
 
     return (
-        <div className="bg-[#0f0f0f] py-20 overflow-hidden">
+        <div className="bg-background py-20 overflow-hidden">
             <div className='w-full flex flex-col items-center justify-center pb-32'>
-                <h1 className='text-4xl md:text-5xl font-bold max-w-2xl text-center text-white'>Role-Based Roadmaps</h1>
+                <h1 className='text-4xl md:text-5xl font-bold max-w-2xl text-center text-foreground'>Role-Based Roadmaps</h1>
                 <p className='mt-10 flex items-center gap-1.5 text-sm text-[#8bc34a] font-medium tracking-widest uppercase'>Explore <ArrowDown size={15} className="animate-bounce" /></p>
             </div>
 
@@ -65,15 +97,18 @@ export const ParallaxScrollFeatureSection = () => {
                         className={`min-h-[70vh] flex flex-col md:flex-row items-center justify-center md:gap-20 gap-10 ${section.reverse ? 'md:flex-row-reverse' : ''}`}
                     >
                         <motion.div style={{ y: translateContents[index] }} className="flex-1">
-                            <div className="text-4xl md:text-5xl font-bold text-white max-w-md leading-tight">{section.title}</div>
+                            <div className="text-4xl md:text-5xl font-bold text-foreground max-w-md leading-tight">{section.title}</div>
                             <motion.p
                                 style={{ y: translateContents[index] }}
-                                className="text-gray-400 max-w-md mt-6 text-lg"
+                                className="text-muted-foreground max-w-md mt-6 text-lg"
                             >
                                 {section.description}
                             </motion.p>
-                            <button className="mt-8 text-[#8bc34a] hover:text-white font-semibold flex items-center gap-2 transition-colors">
-                                View Roadmap &rarr;
+                            <button
+                                onClick={() => navigate(user ? section.route : '/login')}
+                                className="mt-8 text-[#8bc34a] hover:text-foreground font-semibold flex items-center gap-2 transition-colors"
+                            >
+                                {user ? 'View Roadmap' : 'Sign in to View'} &rarr;
                             </button>
                         </motion.div>
                         <motion.div

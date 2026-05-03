@@ -72,10 +72,10 @@ export default function TeamShowcase({ members = DEFAULT_MEMBERS }: TeamShowcase
   const col3 = members.filter((_, i) => i % 3 === 2);
 
   return (
-    <div className="bg-[#0f0f0f] text-white py-20 px-4 md:px-6 font-sans">
+    <div className="bg-background text-foreground py-20 px-4 md:px-6 font-sans">
       <div className="max-w-5xl mx-auto mb-16 text-center">
         <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">Community Driven</h2>
-        <p className="text-gray-400 max-w-2xl mx-auto text-lg">Routiq is built by Kamran Ahmed and maintained with the help of the amazing developer community. Join over 2.8M registered developers.</p>
+        <p className="text-muted-foreground max-w-2xl mx-auto text-lg">Routiq is built by Kamran Ahmed and maintained with the help of the amazing developer community. Join over 2.8M registered developers.</p>
       </div>
       <div className="flex flex-col md:flex-row items-start gap-8 md:gap-10 lg:gap-14 select-none w-full max-w-5xl mx-auto">
         {/* ── Left: photo grid ── */}
@@ -204,7 +204,7 @@ function MemberRow({
         <span
           className={cn(
             'text-lg md:text-[20px] font-bold leading-none tracking-tight transition-colors duration-300',
-            isActive ? 'text-white' : 'text-white/80',
+            isActive ? 'text-foreground' : 'text-foreground/80',
           )}
         >
           {member.name}
@@ -224,7 +224,7 @@ function MemberRow({
                 href={member.social.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-1 rounded text-gray-400 hover:text-[#8bc34a] hover:bg-white/5 transition-all duration-150 hover:scale-110"
+                className="p-1 rounded text-muted-foreground hover:text-[#8bc34a] hover:bg-muted transition-all duration-150 hover:scale-110"
               >
                 <FaTwitter size={14} />
               </a>

@@ -68,7 +68,7 @@ export default function BestPractices() {
   });
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] text-white pt-24 px-4 pb-20">
+    <div className="min-h-screen bg-background text-foreground pt-24 px-4 pb-20">
       <div className="max-w-7xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
@@ -76,10 +76,10 @@ export default function BestPractices() {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white mb-4">
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-foreground mb-4">
             Best Practices
           </h1>
-          <p className="text-gray-400 text-lg md:text-xl">
+          <p className="text-muted-foreground text-lg md:text-xl">
             Curated learning resources from YouTube
           </p>
         </motion.div>
@@ -93,7 +93,7 @@ export default function BestPractices() {
               placeholder="Search videos or channels..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[#151515] border border-white/10 rounded-full py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-[#8bc34a]/50 transition-colors"
+              className="w-full bg-secondary border border-border rounded-full py-2.5 pl-10 pr-4 text-foreground focus:outline-none focus:border-[#8bc34a]/50 transition-colors"
             />
           </div>
 
@@ -105,7 +105,7 @@ export default function BestPractices() {
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                   activeCategory === category 
                     ? 'bg-[#8bc34a] text-black shadow-[0_0_10px_rgba(139,195,74,0.3)]' 
-                    : 'bg-[#151515] text-gray-400 hover:text-white border border-white/5 hover:border-white/20'
+                    : 'bg-secondary text-muted-foreground hover:text-foreground border border-border/50 hover:border-border/50'
                 }`}
               >
                 {category}
@@ -129,7 +129,7 @@ export default function BestPractices() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
               whileHover={{ scale: 1.03 }}
-              className="group flex flex-col bg-[#151515] rounded-xl overflow-hidden border border-white/5 hover:border-[#8bc34a]/30 hover:shadow-[0_0_20px_rgba(139,195,74,0.15)] transition-all"
+              className="group flex flex-col bg-secondary rounded-xl overflow-hidden border border-border/50 hover:border-[#8bc34a]/30 hover:shadow-[0_0_20px_rgba(139,195,74,0.15)] transition-all"
             >
               <div className="relative aspect-video overflow-hidden bg-[#111] flex items-center justify-center">
                 <img 
@@ -159,9 +159,9 @@ export default function BestPractices() {
               </div>
               <div className="p-5 flex flex-col flex-1">
                 <span className="text-xs font-semibold text-[#8bc34a] mb-2">{video.category}</span>
-                <h3 className="text-lg font-bold text-white mb-1 line-clamp-2">{video.title}</h3>
-                <p className="text-sm text-gray-400 mt-auto flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs text-white/70">
+                <h3 className="text-lg font-bold text-foreground mb-1 line-clamp-2">{video.title}</h3>
+                <p className="text-sm text-muted-foreground mt-auto flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-xs text-foreground/70">
                     {video.channel.charAt(0)}
                   </span>
                   {video.channel}

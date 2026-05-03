@@ -62,7 +62,7 @@ export const Input = memo(
         <input
           type={type}
           className={cn(
-            `shadow-input dark:placeholder-text-neutral-600 flex h-12 w-full rounded-md border-none bg-neutral-900 px-3 py-2 text-sm text-white transition duration-400 group-hover/input:shadow-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-500 focus-visible:ring-[2px] focus-visible:ring-[#8bc34a] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50`,
+            `shadow-input dark:placeholder-text-neutral-600 flex h-12 w-full rounded-md border-none bg-neutral-900 px-3 py-2 text-sm text-foreground transition duration-400 group-hover/input:shadow-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-500 focus-visible:ring-[2px] focus-visible:ring-[#8bc34a] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50`,
             className
           )}
           ref={ref}
@@ -170,7 +170,7 @@ export const Ripple = memo(function Ripple({
   return (
     <section
       className={`absolute inset-0 flex items-center justify-center
-        bg-[#0f0f0f]
+        bg-background
         [mask-image:linear-gradient(to_bottom,white,transparent)] ${className}`}
     >
       {Array.from({ length: numCircles }, (_, i) => {
@@ -250,16 +250,16 @@ export const AnimatedForm = memo(function AnimatedForm({
   };
 
   return (
-    <section className='max-md:w-full flex flex-col gap-4 w-96 mx-auto relative z-10 p-8 rounded-2xl bg-neutral-900/50 backdrop-blur-md border border-white/5'>
+    <section className='max-md:w-full flex flex-col gap-4 w-96 mx-auto relative z-10 p-8 rounded-2xl bg-neutral-900/50 backdrop-blur-md border border-border/50'>
       <BoxReveal boxColor='#8bc34a' duration={0.3}>
-        <h2 className='font-bold text-4xl text-white tracking-tight'>
+        <h2 className='font-bold text-4xl text-foreground tracking-tight'>
           {header}
         </h2>
       </BoxReveal>
 
       {subHeader && (
         <BoxReveal boxColor='#8bc34a' duration={0.3} className='pb-2'>
-          <p className='text-gray-400 text-sm max-w-sm'>
+          <p className='text-muted-foreground text-sm max-w-sm'>
             {subHeader}
           </p>
         </BoxReveal>
@@ -285,11 +285,11 @@ export const AnimatedForm = memo(function AnimatedForm({
 
           <BoxReveal boxColor='#8bc34a' duration={0.3} width='100%'>
             <section className='flex items-center gap-4 my-2'>
-              <hr className='flex-1 border-t border-white/10' />
+              <hr className='flex-1 border-t border-border' />
               <p className='text-gray-500 text-sm'>
                 or
               </p>
-              <hr className='flex-1 border-t border-white/10' />
+              <hr className='flex-1 border-t border-border' />
             </section>
           </BoxReveal>
         </>
@@ -299,7 +299,7 @@ export const AnimatedForm = memo(function AnimatedForm({
         {fields.map((field) => (
             <section key={field.label} className='flex flex-col gap-2'>
               <BoxReveal boxColor='#8bc34a' duration={0.3}>
-                <label htmlFor={field.label} className="text-sm font-medium text-gray-300">
+                <label htmlFor={field.label} className="text-sm font-medium text-muted-foreground">
                   {field.label} <span className='text-[#8bc34a]'>*</span>
                 </label>
               </BoxReveal>
@@ -328,7 +328,7 @@ export const AnimatedForm = memo(function AnimatedForm({
                     <button
                       type='button'
                       onClick={toggleVisibility}
-                      className='absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-400 hover:text-white'
+                      className='absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-muted-foreground hover:text-foreground'
                     >
                       {visible ? (
                         <Eye className='h-5 w-5' />
