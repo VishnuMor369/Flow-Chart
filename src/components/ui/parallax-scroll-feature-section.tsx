@@ -24,7 +24,7 @@ export const ParallaxScrollFeatureSection = () => {
             route: '/roadmap/backend',
             title: "Backend Roadmap",
             description: "Master server-side programming. Explore databases, APIs, scaling, architecture, and security concepts in depth.",
-            imageUrl: 'https://media.geeksforgeeks.org/wp-content/uploads/20240529152324/Backend-Developer-Roadmap-copy.webp',
+            imageUrl: 'https://images.unsplash.com/photo-1505685296765-3a2736de412f?q=80&w=2070&auto=format&fit=crop',
             reverse: true
         },
         {
@@ -32,7 +32,7 @@ export const ParallaxScrollFeatureSection = () => {
             route: '/roadmap/devops',
             title: "DevOps Roadmap",
             description: "Automate and streamline the development lifecycle. Master CI/CD, containerization, cloud providers, and monitoring.",
-            imageUrl: 'https://www.jeeviacademy.com/wp-content/uploads/2026/01/Screenshot-2026-01-21-172934.png',
+            imageUrl: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=2070&auto=format&fit=crop',
             reverse: false
         },
         {
@@ -40,7 +40,7 @@ export const ParallaxScrollFeatureSection = () => {
             route: '/roadmap/full-stack',
             title: "Full Stack Roadmap",
             description: "Become a complete developer by mastering both frontend and backend technologies, databases, and deployment.",
-            imageUrl: 'https://images.unsplash.com/photo-1627398240308-2d45b736b431?q=80&w=2070&auto=format&fit=crop',
+            imageUrl: 'https://images.unsplash.com/photo-1516251193007-45ef944ab0c6?q=80&w=2070&auto=format&fit=crop',
             reverse: true
         },
         {
@@ -48,7 +48,7 @@ export const ParallaxScrollFeatureSection = () => {
             route: '/roadmap/machine-learning',
             title: "Machine Learning Roadmap",
             description: "Dive into data science, AI, deep learning, and MLOps. Learn Python, statistics, algorithms, and models.",
-            imageUrl: 'https://images.unsplash.com/photo-1555949963-aa79dcee57d5?q=80&w=2070&auto=format&fit=crop',
+            imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop',
             reverse: false
         },
         {
@@ -56,7 +56,7 @@ export const ParallaxScrollFeatureSection = () => {
             route: '/roadmap/blockchain',
             title: "Blockchain Roadmap",
             description: "Build decentralized applications. Learn cryptography, Ethereum, smart contracts, Solidity, and Web3 integration.",
-            imageUrl: 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?q=80&w=2069&auto=format&fit=crop',
+            imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop',
             reverse: true
         }
     ]
@@ -118,10 +118,11 @@ export const ParallaxScrollFeatureSection = () => {
                             }}
                             className="relative flex-1 w-full aspect-square md:aspect-video rounded-xl overflow-hidden"
                         >
-                            <img
-                                src={section.imageUrl}
-                                className="w-full h-full object-cover rounded-xl"
-                                alt={`Section ${section.id}`}
+                            <div
+                                className="w-full h-full bg-cover bg-center"
+                                style={{ backgroundImage: `url(${section.imageUrl})` }}
+                                role="img"
+                                aria-label={section.title}
                             />
                             <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-xl"></div>
                         </motion.div>

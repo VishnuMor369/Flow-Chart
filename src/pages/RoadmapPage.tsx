@@ -1,7 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import InteractiveRoadmap from '@/components/ui/interactive-roadmap';
 import { ArrowLeft } from 'lucide-react';
-import { Header } from '@/components/ui/header-3';
 import HoverFooter from '@/components/ui/hover-footer';
 import { getRoadmapById } from '@/data/roadmaps';
 
@@ -12,7 +11,6 @@ export default function RoadmapPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <Header />
       
       <main className="flex-1 flex flex-col pt-20">
         <div className="px-8 py-4 border-b border-border flex items-center justify-between bg-secondary">

@@ -114,7 +114,6 @@ function LandingPage() {
 
       {!loading && (
         <>
-          <Header onAiTutorClick={() => setChatOpen(true)} />
           <AiTutorChat isOpen={chatOpen} onClose={() => setChatOpen(false)} />
 
           <main>
@@ -232,6 +231,7 @@ function App() {
 
   return (
     <AuthProvider>
+      <Header onAiTutorClick={() => setChatOpen(true)} />
       <AiTutorChat isOpen={chatOpen} onClose={() => setChatOpen(false)} />
       <Routes>
         <Route path="/" element={<LandingPage />} />
@@ -244,7 +244,7 @@ function App() {
         } />
         <Route path="/best-practices" element={
           <ProtectedRoute>
-            <><Header onAiTutorClick={() => setChatOpen(true)} /><BestPractices /><HoverFooter /></>
+            <><BestPractices /><HoverFooter /></>
           </ProtectedRoute>
         } />
       </Routes>

@@ -2,7 +2,6 @@ import React, { useState, FormEvent, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
-import { Header } from '@/components/ui/header-3';
 import HoverFooter from '@/components/ui/hover-footer';
 import { Eye, EyeOff, Loader2, Mail, Lock, ArrowRight, Sparkles, ArrowLeft, KeyRound } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
@@ -153,7 +152,6 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
-      <Header />
 
       <main className="flex-1 flex items-center justify-center px-4 pt-24 pb-12 relative">
         {/* Background effects */}

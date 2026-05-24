@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
-import { Header } from '@/components/ui/header-3';
 import HoverFooter from '@/components/ui/hover-footer';
 import { LogOut, User, MapPin, Clock, CheckCircle2, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -62,7 +61,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
-      <Header />
 
       <main className="flex-1 pt-24 pb-12 px-4">
         <div className="max-w-3xl mx-auto">
