@@ -205,6 +205,24 @@ export function AiTutorChat({ isOpen, onClose }: AiTutorChatProps) {
     setIsLoading(true);
 
     try {
+      // FAST PATH: show an immediate quick/fallback reply to improve perceived latency
+      const pendingId = `pending-${Date.now()}`;
+      const quickFallback = findBestFallback(content) || (() => {
+        const topicText = content.trim().length > 60 ? content.trim().slice(0, 60) + '…' : content.trim();
+        const randomIndex = Math.floor(Math.random() * GENERIC_RESPONSES.length);
+        return GENERIC_RESPONSES[randomIndex](topicText);
+      })();
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: pendingId,
+          role: 'assistant',
+          content: quickFallback,
+          timestamp: new Date(),
+        },
+      ]);
+
       let aiText = '';
       let ollamaStreamed = false;
 
@@ -238,20 +256,10 @@ export function AiTutorChat({ isOpen, onClose }: AiTutorChatProps) {
           }),
         });
 
-        if (ollamaResponse.ok && ollamaResponse.body) {
+          if (ollamaResponse.ok && ollamaResponse.body) {
           const reader = ollamaResponse.body.getReader();
           const decoder = new TextDecoder();
-          const messageId = (Date.now() + 1).toString();
-          
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: messageId,
-              role: 'assistant',
-              content: '',
-              timestamp: new Date(),
-            },
-          ]);
+          const messageId = pendingId; // reuse the provisional message id so we update it in-place
 
           while (true) {
             const { done, value } = await reader.read();
@@ -316,6 +324,10 @@ export function AiTutorChat({ isOpen, onClose }: AiTutorChatProps) {
           if (response.ok) {
             const data = await response.json();
             aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            // update the provisional message with the Gemini output
+            setMessages((prev) =>
+              prev.map((m) => (m.id === pendingId ? { ...m, content: aiText } : m))
+            );
           }
         } catch {
           // Gemini API failed
@@ -336,15 +348,11 @@ export function AiTutorChat({ isOpen, onClose }: AiTutorChatProps) {
         await new Promise((r) => setTimeout(r, 800));
       }
 
+      // If Ollama streaming was not used, replace the provisional message with the final text
       if (!ollamaStreamed) {
-        const assistantMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          role: 'assistant',
-          content: aiText,
-          timestamp: new Date(),
-        };
-
-        setMessages((prev) => [...prev, assistantMessage]);
+        setMessages((prev) =>
+          prev.map((m) => (m.id === pendingId ? { ...m, content: aiText } : m))
+        );
       }
     } catch (error) {
       console.error('Chat error:', error);
