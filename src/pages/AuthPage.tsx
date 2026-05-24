@@ -21,6 +21,7 @@ export default function AuthPage() {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const { signIn, signUp, signInWithGithub, resetPassword, updatePassword, user } = useAuth();
+  const { devSignIn } = useAuth();
   const navigate = useNavigate();
 
   // If user is already logged in and not resetting password, redirect
@@ -97,7 +98,8 @@ export default function AuthPage() {
       if (signUpError) {
         setError(signUpError);
       } else {
-        setSuccess('🎉 Account created! Check your email for a verification link to activate your account.');
+        setSuccess('🎉 Account created and signed in! Redirecting...');
+        setTimeout(() => navigate('/'), 1000);
       }
     } else {
       const { error: signInError } = await signIn(email, password);
@@ -381,14 +383,26 @@ export default function AuthPage() {
               </p>
             )}
 
-            {/* Sign up info about verification */}
-            {mode === 'signup' && (
-              <div className="mt-4 px-3 py-2.5 rounded-lg bg-white/[0.03] border border-border/50">
-                <p className="text-[11px] text-gray-500 text-center leading-relaxed">
-                  📧 You'll receive a verification email after signing up. Please check your inbox and click the link to activate your account.
-                </p>
+            {/* Dev-only quick demo login */}
+            {import.meta.env.VITE_DEV_AUTH === 'true' && (
+              <div className="mt-4 text-center">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setLoading(true);
+                    const { error: devErr } = devSignIn ? await devSignIn() : { error: 'Not available' };
+                    setLoading(false);
+                    if (devErr) setError(devErr);
+                    else navigate('/');
+                  }}
+                  className="text-sm text-[#8bc34a] hover:underline font-medium"
+                >
+                  Demo Login (no credentials)
+                </button>
               </div>
             )}
+
+            {/* Removed verification messaging: users are signed in immediately after signup */}
           </div>
 
           {/* Bottom tagline */}

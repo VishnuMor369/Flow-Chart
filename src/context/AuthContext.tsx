@@ -12,6 +12,7 @@ type AuthContextType = {
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: string | null }>;
   updatePassword: (newPassword: string) => Promise<{ error: string | null }>;
+  devSignIn?: () => Promise<{ error: string | null }>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -42,8 +43,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signUp = useCallback(async (email: string, password: string) => {
+    // If a secure server endpoint is configured, use it to create a confirmed user
+    // The server should use the Supabase service role key to create users and mark them confirmed.
+    const createUserUrl = import.meta.env.VITE_CREATE_USER_URL;
+    if (createUserUrl) {
+      try {
+        const res = await fetch(createUserUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          return { error: data?.error || 'Could not create user via server.' };
+        }
+
+        // Try to sign in client-side to obtain a session
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) return { error: signInError.message };
+
+        return { error: null };
+      } catch (err: any) {
+        return { error: err?.message || 'Server request failed.' };
+      }
+    }
+
+    // Fallback: use Supabase client-side signUp (may require email confirmation depending on your Supabase settings)
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) return { error: error.message };
+
+    // Attempt to sign in immediately after sign up to avoid separate verification step in UI.
+    // Note: If your Supabase project requires email confirmations, this may fail.
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    if (signInError) return { error: signInError.message };
+
     return { error: null };
   }, []);
 
@@ -66,6 +99,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
   }, []);
 
+  // Dev-only: quick demo sign-in without credentials. Only enabled when VITE_DEV_AUTH is truthy.
+  const devSignIn = useCallback(async () => {
+    const enabled = import.meta.env.VITE_DEV_AUTH === 'true';
+    if (!enabled) return { error: 'Dev auth disabled' };
+
+    // Create a lightweight fake user for UI/testing only.
+    const fakeUser: User = {
+      id: 'dev-user',
+      app_metadata: {},
+      user_metadata: { full_name: 'Demo User', avatar_url: '' },
+      aud: 'authenticated',
+      created_at: new Date().toISOString(),
+      email: 'demo@example.com',
+      phone: null,
+      confirmed_at: new Date().toISOString(),
+      role: 'authenticated',
+    } as unknown as User;
+
+    setUser(fakeUser);
+    setSession(null);
+    setLoading(false);
+    return { error: null };
+  }, []);
+
   const resetPassword = useCallback(async (email: string) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/login?mode=reset`,
@@ -82,7 +139,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, session, loading, signUp, signIn, signInWithGithub, signOut, resetPassword, updatePassword }}
+      value={{ user, session, loading, signUp, signIn, signInWithGithub, signOut, resetPassword, updatePassword, devSignIn }}
     >
       {children}
     </AuthContext.Provider>
